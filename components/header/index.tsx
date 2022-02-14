@@ -8,7 +8,7 @@ export interface HeaderProps {}
 
 const Header: FC<HeaderProps> = () => {
   return (
-    <header className="sticky top-0 h-[72px] backdrop-filter backdrop-blur-md bg-white">
+    <header className="z-40 sticky top-0 h-[72px] backdrop-filter backdrop-blur-md bg-white">
       <Head>
         <title>Embrandiri&#39;s Kitchen</title>
       </Head>

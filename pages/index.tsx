@@ -4,15 +4,17 @@ import Header from "../components/header";
 
 const Index: NextPage = () => {
   return (
-    <div className="text-gray-900 min-h-screen bg-gray-50 bg-gradient-to-br from-gray-50 to-green-50">
+    <div className="text-gray-900 bg-gray-50 bg-gradient-to-br from-white to-green-50">
       <Header />
       {/* <main style={{ minHeight: "calc(100vh - 72px)" }}>
         <Placeholder />
       </main> */}
-      <main className="flex md:justify-between justify-center items-center max-w-6xl px-8 mx-auto mt-8">
+      <main className="flex md:justify-between justify-center items-center max-w-6xl px-8 mx-auto pt-16 pb-32">
         <div className="">
           <h1 className="text-center md:text-left text-4xl tracking-tight font-bold text-gray-700 md:text-5xl lg:text-6xl">
-            <span className="block">Traditional Indian Food</span>
+            <span className="block">
+              Traditional <span>Indian Food</span>
+            </span>
             <span className="block text-[#5B9270]">at your fingertips!</span>
           </h1>
           <p className="text-base text-gray-500 mt-5 text-md lg:text-lg max-w-xl">
@@ -65,7 +67,7 @@ const Index: NextPage = () => {
             </div>
           </div>
         </div>
-        <div className="hidden md:inline rounded-xl overflow-hidden relative w-[20rem] aspect-[1/2]">
+        <div className="hidden md:inline mx-2 rounded-xl overflow-hidden relative w-[24rem] w-full aspect-square">
           <Image
             src="/spices.jpg"
             alt="Spices"
@@ -78,6 +80,17 @@ const Index: NextPage = () => {
           />
         </div>
       </main>
+      <section className="h-[300rem] max-w-6xl px-8 mx-auto py-1">
+        <h1 className="text-left text-3xl tracking-tight font-bold text-gray-700">
+          Our Products
+        </h1>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 py-4">
+          <div className="aspect-[1/1.25] bg-red-300"></div>
+          <div className="aspect-[1/1.25] bg-blue-300"></div>
+          <div className="aspect-[1/1.25] bg-green-300"></div>
+          <div className="aspect-[1/1.25] bg-gray-300"></div>
+        </div>
+      </section>
     </div>
   );
 };
