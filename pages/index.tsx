@@ -139,7 +139,7 @@ const Index: NextPage = () => {
 
 const ProductCard = (props) => {
   const { name, image, price } = props.product;
-  console.log(props.product);
+  // console.log(props.product);
   return (
     <div className="flex flex-col">
       <figure className="group mb-2 flex-grow relative aspect-square">

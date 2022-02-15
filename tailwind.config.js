@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      sans: ["Inter", "system-ui", "sans-serif"],
+    },
     container: {
       center: true,
       padding: "2rem",
