@@ -12,7 +12,7 @@ const Header: FC<HeaderProps> = () => {
       <Head>
         <title>Embrandiri&#39;s Kitchen</title>
       </Head>
-      <div className="container mx-auto h-full flex justify-start items-center">
+      <div className="sm:container mx-auto px-2 h-full flex justify-start items-center">
         <Link href="/" scroll={false}>
           <a>
             <h1 className="font-normal text-2xl text-gray-600 flex items-center">
