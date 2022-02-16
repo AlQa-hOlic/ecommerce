@@ -1,27 +1,37 @@
 .loading {
   position: relative;
   overflow: hidden;
-  width: 100%;
+}
+
+@keyframes fade {
+  from,
+  to {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.loading::before {
+  content: "";
+  position: absolute;
+  background: white;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
 }
 
 .loading::after {
   content: "";
-  display: block;
-  background-color: #dddfe2;
   position: absolute;
+  background: lightgray;
   top: 0;
   bottom: 0;
-  width: 100%;
-  height: 100%;
-  transform: translateX(0);
-  animation: 1.5s loading-placeholder ease-in-out infinite;
-}
-
-@keyframes loading-placeholder {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  left: 0;
+  right: 0;
+  animation: fade 1500ms linear infinite;
+  z-index: 11;
 }

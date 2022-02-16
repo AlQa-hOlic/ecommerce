@@ -2,8 +2,6 @@ import { FC } from "react";
 import Head from "next/head";
 import Link from "next/link";
 
-import classes from "./header.module.css";
-
 export interface HeaderProps {}
 
 const Header: FC<HeaderProps> = () => {
