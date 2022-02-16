@@ -20,7 +20,7 @@ const ProductCard = (props) => {
             layout="fill"
           />
         </a>
-        <div className="absolute bottom-2 left-[50%] translate-x-[-50%] translate-y-full group-hover:translate-y-0 opacity-0 group-hover:opacity-100 invisible group-hover:visible z-10 flex space-x-2 p-2 rounded text-gray-800 bg-white shadow-lg transition duration-300">
+        <div className="absolute bottom-2 left-[50%] translate-x-[-50%] translate-y-full group-hover:translate-y-0 opacity-0 group-hover:opacity-100 invisible group-hover:visible z-10 flex space-x-4 py-2 px-4 rounded text-gray-800 bg-white shadow-lg transition duration-300">
           <a href="#">
             <svg
               xmlns="http://www.w3.org/2000/svg"

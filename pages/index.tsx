@@ -124,7 +124,7 @@ const Index: NextPage = () => {
           />
         </div>
       </main>
-      <section className="h-[300rem] max-w-6xl px-8 mx-auto py-1">
+      <section className="max-w-6xl px-8 mx-auto py-1">
         <h1 className="text-left text-3xl tracking-tight font-bold text-gray-700">
           Our Products
         </h1>
