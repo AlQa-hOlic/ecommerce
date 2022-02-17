@@ -39,7 +39,7 @@ const Header: FC<HeaderProps> = () => {
                 />
               </svg>
 
-              <span className="hidden md:inline text-[#5B9270]">
+              <span className="hidden md:inline text-primary">
                 Embrandiri&#39;s Kitchen
               </span>
             </h1>

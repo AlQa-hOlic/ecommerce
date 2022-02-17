@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { NextPage } from "next";
 import Image from "next/image";
+import smoothscroll from "smoothscroll-polyfill";
+
 import Header from "../components/header";
 import ProductCard from "../components/product-card";
 
@@ -47,19 +50,22 @@ const static_products = [
 ];
 
 const Index: NextPage = () => {
+  useEffect(() => {
+    smoothscroll.polyfill();
+  }, []);
+
   return (
     <div className="text-gray-900 bg-gray-50 bg-gradient-to-br from-white to-green-50">
       <Header />
-      {/* <main style={{ minHeight: "calc(100vh - 72px)" }}>
-        <Placeholder />
-      </main> */}
-      <main className="flex md:justify-between justify-center items-center max-w-6xl px-8 mx-auto pt-16 pb-32">
+      <main className="flex md:justify-between justify-center items-center max-w-6xl space-x-4 px-8 mx-auto pt-16 pb-32">
         <div className="">
-          <h1 className="text-center md:text-left text-4xl tracking-tight font-bold text-gray-700 md:text-5xl lg:text-6xl">
+          <h1 className="text-center md:text-left text-4xl tracking-tight font-bold text-gray-700 md:text-5xl lg:text-6xl whitespace-nowrap text-ellipsis overflow-hidden">
             <span className="block">
               Traditional <span>Indian Food</span>
             </span>
-            <span className="block text-[#5B9270]">at your fingertips!</span>
+            <span className="block leading-relaxed text-primary whitespace-nowrap text-ellipsis overflow-hidden">
+              at your fingertips!
+            </span>
           </h1>
           <p className="text-base text-gray-500 mt-5 text-md lg:text-lg max-w-xl">
             Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui
@@ -70,7 +76,15 @@ const Index: NextPage = () => {
             <div className="rounded-md shadow">
               <a
                 href="#"
-                className="w-full flex items-center justify-center px-5 py-3 border border-transparent text-lg font-medium rounded-md text-white bg-[#5B9270] hover:bg-[#518364]"
+                onClick={(e) => {
+                  e.preventDefault();
+                  let el = document.getElementById("products-section");
+                  window.scrollTo({
+                    top: el.getBoundingClientRect().top + window.scrollY - 92,
+                    behavior: "smooth",
+                  });
+                }}
+                className="w-full flex items-center justify-center px-5 py-3 border border-transparent text-lg font-medium rounded-md text-white bg-primary hover:bg-primary-dark"
               >
                 Order Now
                 {/* <svg
@@ -92,7 +106,7 @@ const Index: NextPage = () => {
             <div className="">
               <a
                 href="#"
-                className="w-full flex items-center justify-center px-5 py-3 border border-transparent text-lg font-medium rounded-md text-[#518364] hover:text-[#5B9270]"
+                className="w-full flex items-center justify-center px-5 py-3 border border-transparent text-lg font-medium whitespace-nowrap text-ellipsis overflow-hidden rounded-md text-primary-dark hover:text-primary"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +125,7 @@ const Index: NextPage = () => {
             </div>
           </div>
         </div>
-        <div className="hidden md:inline mx-2 rounded-xl overflow-hidden relative w-[24rem] w-full aspect-square">
+        <div className="hidden md:inline mx-2 rounded-xl overflow-hidden relative max-w-[24rem] w-full aspect-square">
           <Image
             src="/dal_tadka.jpg"
             alt="Dal Tadka"
@@ -124,7 +138,7 @@ const Index: NextPage = () => {
           />
         </div>
       </main>
-      <section className="max-w-6xl px-8 mx-auto py-1">
+      <section className="max-w-6xl px-8 mx-auto py-1" id="products-section">
         <h1 className="text-left text-3xl tracking-tight font-bold text-gray-700">
           Our Products
         </h1>
