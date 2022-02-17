@@ -1,18 +1,13 @@
-import { graphql, buildSchema } from "graphql";
-
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
-
-const rootValue = { hello: () => "Hello world!" };
+import { graphql } from "graphql";
+import { rootValue, schema } from "../../graphql";
 
 const graphqlHandler = async (req, res) => {
   const source = req.body.query;
+  const variableValues = req.body.variables;
   const response = await graphql({
     schema,
     source,
+    variableValues,
     rootValue,
   });
 
