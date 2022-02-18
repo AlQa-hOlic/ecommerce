@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { NextPage } from "next";
 import Image from "next/image";
+// import { signIn, signOut, useSession } from "next-auth/react";
 import smoothscroll from "smoothscroll-polyfill";
 
 import Header from "../components/header";
@@ -53,6 +54,22 @@ const Index: NextPage = () => {
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
+
+  // const { data: session, status } = useSession();
+
+  // if (status === "loading") return <pre>Loading....</pre>;
+  // if (status === "unauthenticated")
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <button
+  //         tabIndex={0}
+  //         className="px-3 py-2 rounded text-white bg-primary-dark hover:bg-primary focus:bg-primary focus:ring-2 focus:ring-green-400 focus:outline-none"
+  //         onClick={() => signIn()}
+  //       >
+  //         Login
+  //       </button>
+  //     </div>
+  //   );
 
   return (
     <div className="text-gray-900 bg-gray-50 bg-gradient-to-br from-white to-green-50">

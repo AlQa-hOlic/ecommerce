@@ -1,5 +1,3 @@
-import { login } from "./auth";
-
 export const rootValue = {
   me: () => {
     return {
@@ -7,5 +5,4 @@ export const rootValue = {
       email: "test@test.com",
     };
   },
-  login,
 };
