@@ -1,17 +1,31 @@
-import { graphql } from "graphql";
-import { rootValue, schema } from "../../graphql";
+import Cors from "micro-cors";
+import { ApolloServer } from "apollo-server-micro";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 
-const graphqlHandler = async (req, res) => {
-  const source = req.body.query;
-  const variableValues = req.body.variables;
-  const response = await graphql({
-    schema,
-    source,
-    variableValues,
-    rootValue,
-  });
+import { resolvers } from "../../graphql/resolvers";
+import { typeDefs } from "../../graphql/schema";
 
-  return res.end(JSON.stringify(response));
+const cors = Cors();
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+  plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+});
+const startServer = apolloServer.start();
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
 };
 
-export default graphqlHandler;
+export default cors(async function handler(req, res) {
+  if (req.method === "OPTIONS") {
+    res.end();
+    return false;
+  }
+
+  await startServer;
+
+  await apolloServer.createHandler({ path: "/api/graphql" })(req, res);
+});

@@ -1,14 +1,7 @@
-import { buildSchema } from "graphql";
+import { gql } from "apollo-server-micro";
 
-const gql = String.raw;
-
-export const schema = buildSchema(gql`
-  type User {
-    email: String!
-    name: String
-  }
-
+export const typeDefs = gql`
   type Query {
-    me: User!
+    hello: String
   }
-`);
+`;
