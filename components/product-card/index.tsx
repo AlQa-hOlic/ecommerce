@@ -2,15 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 
 const ProductCard = (props) => {
-  const { name, image, price } = props.product;
+  const { name, imageUrl, price } = props.product;
   // console.log(props.product);
   return (
     <div className="flex flex-col">
       <figure className="group mb-2 flex-grow relative aspect-square">
         <Image
-          src={image}
+          src={imageUrl}
           placeholder="blur"
-          blurDataURL={`/_next/image?url=${image}&w=16&q=1`}
+          blurDataURL={`/_next/image?url=${imageUrl}&w=16&q=1`}
           alt={name}
           className="object-cover rounded overflow-hidden"
           loading="lazy"

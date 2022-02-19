@@ -7,48 +7,7 @@ import smoothscroll from "smoothscroll-polyfill";
 import Header from "../components/header";
 import ProductCard from "../components/product-card";
 
-const static_products = [
-  {
-    name: "Dal Tadka",
-    image: "/dal_tadka.jpg",
-    price: 249,
-  },
-  {
-    name: "Spices",
-    image: "/spices.jpg",
-    price: 999,
-  },
-  {
-    name: "Paneer Chawal",
-    image: "/paneer_chawal.jpg",
-    price: 230,
-  },
-  {
-    name: "Paneer Salad",
-    image: "/paneer_salad.jpg",
-    price: 140,
-  },
-  {
-    name: "Pizza",
-    image: "/pizza.jpg",
-    price: 480,
-  },
-  {
-    name: "Rasberry Rush",
-    image: "/rasberry_rush.jpg",
-    price: 180,
-  },
-  {
-    name: "Sandwich",
-    image: "/sandwich.jpg",
-    price: 110,
-  },
-  {
-    name: "Waffles",
-    image: "/waffles.jpg",
-    price: 149,
-  },
-];
+import productData from "../prisma/productData.json";
 
 const Index: NextPage = () => {
   useEffect(() => {
@@ -160,7 +119,7 @@ const Index: NextPage = () => {
           Our Products
         </h1>
         <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4">
-          {static_products.map((p) => (
+          {productData.map((p) => (
             <ProductCard key={p.name} product={p} />
           ))}
         </div>
