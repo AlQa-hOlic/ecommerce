@@ -19,6 +19,7 @@ const apolloServer = new ApolloServer({
       },
     }),
   ],
+  introspection: true,
   context: async ({ req }) => {
     const session = await getSession({ req });
     return { session };
