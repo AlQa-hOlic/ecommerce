@@ -4,6 +4,7 @@ export const typeDefs = gql`
   type Query {
     me: User
     products(filter: String, skip: Int, take: Int): [Product!]!
+    wishlist(skip: Int, take: Int): [Product!]!
   }
 
   type Mutation {
@@ -23,7 +24,9 @@ export const typeDefs = gql`
   }
 
   type Product {
+    id: String
     name: String
+    sku: String
     imageUrl: String
     isWishlisted: Boolean
     price: Float

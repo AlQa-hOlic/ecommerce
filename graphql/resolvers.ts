@@ -1,4 +1,4 @@
-import productData from "../prisma/productData.json";
+import prisma from "../prisma/client";
 
 export const resolvers = {
   Query: {
@@ -12,19 +12,39 @@ export const resolvers = {
     products: async (parent, args, context, info) => {
       const { filter, skip, take } = args;
 
-      let data = productData;
+      const where = filter
+        ? {
+            OR: [
+              { name: { contains: filter } },
+              { imageUrl: { contains: filter } },
+            ],
+          }
+        : {};
 
-      if (filter) {
-        data = data.filter((t) => t.name.includes(filter));
+      let data = prisma.product.findMany({ where, skip, take });
+
+      return data;
+    },
+    wishlist: async (parent, args, context, info) => {
+      if (!context.session) {
+        throw new Error("You must be authenticated to access wishlist!");
       }
 
-      if (skip) {
-        data = data.slice(skip);
-      }
+      const { skip, take } = args;
 
-      if (take) {
-        data = data.slice(0, take);
-      }
+      let data = prisma.product.findMany({
+        skip,
+        take,
+        where: {
+          wishlistItems: {
+            some: {
+              user: {
+                email: context.session.user.email,
+              },
+            },
+          },
+        },
+      });
 
       return data;
     },
@@ -32,7 +52,18 @@ export const resolvers = {
   Product: {
     isWishlisted: async (parent, args, context, info) => {
       if (context.session) {
-        return true;
+        let wishlistItem = await prisma.wishlistItem.findFirst({
+          where: {
+            user: {
+              email: context.session.user.email,
+            },
+            product: {
+              id: parent.id,
+            },
+          },
+        });
+
+        return wishlistItem !== null;
       }
 
       throw new Error("You must be authenticated to access wishlist!");
