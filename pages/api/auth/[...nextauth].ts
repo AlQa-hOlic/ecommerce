@@ -13,4 +13,25 @@ export default NextAuth({
     }),
   ],
   pages: {},
+  session: { strategy: "jwt" },
+  callbacks: {
+    async jwt({ token, user, account, profile, isNewUser }) {
+      if (account?.accessToken) {
+        token.accessToken = account.accessToken;
+      }
+      if (user?.role) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token?.accessToken) {
+        session.accessToken = token.accessToken;
+      }
+      if (token?.role) {
+        session.user.role = token.role;
+      }
+      return session;
+    },
+  },
 });

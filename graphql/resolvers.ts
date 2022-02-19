@@ -1,5 +1,11 @@
 export const resolvers = {
   Query: {
-    hello: async () => "Hello World!",
+    me: async (parent, args, context, info) => {
+      if (context.session) {
+        return context.session.user;
+      }
+
+      return null;
+    },
   },
 };
