@@ -1,7 +1,8 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.user.delete({ where: { email: "test@embrandiris.com" } });
   const user = await prisma.user.create({
     data: {
       email: "test@embrandiris.com",

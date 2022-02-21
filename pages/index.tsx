@@ -43,7 +43,7 @@ const Index: NextPage = () => {
   //   );
 
   return (
-    <div className="text-gray-900 bg-gray-50 bg-gradient-to-br from-white to-green-50">
+    <div className="text-gray-900 bg-gray-50 bg-gradient-to-br from-white to-green-50 min-h-screen">
       <Header />
       <main className="flex md:justify-between justify-center items-center max-w-6xl space-x-4 px-8 mx-auto pt-16 pb-32">
         <div className="">
