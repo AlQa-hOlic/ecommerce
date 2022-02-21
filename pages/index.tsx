@@ -1,20 +1,32 @@
 import { useEffect } from "react";
 import { NextPage } from "next";
 import Image from "next/image";
-// import { signIn, signOut, useSession } from "next-auth/react";
+import useSWR from "swr";
+import { useSession } from "next-auth/react";
+import { fetcher, gql } from "../graphql/fetcher";
 import smoothscroll from "smoothscroll-polyfill";
 
 import Header from "../components/header";
 import ProductCard from "../components/product-card";
-
-import productData from "../prisma/productData.json";
 
 const Index: NextPage = () => {
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
 
-  // const { data: session, status } = useSession();
+  const { data, error, mutate } = useSWR(gql`
+    query {
+      products {
+        id
+        name
+        imageUrl
+        isWishlisted
+        price
+      }
+    }
+  `);
+
+  const { status } = useSession();
 
   // if (status === "loading") return <pre>Loading....</pre>;
   // if (status === "unauthenticated")
@@ -119,9 +131,37 @@ const Index: NextPage = () => {
           Our Products
         </h1>
         <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4">
-          {productData.map((p) => (
-            <ProductCard key={p.name} product={p} />
-          ))}
+          {error ? (
+            <pre>{JSON.stringify(error)}</pre>
+          ) : data ? (
+            data.products.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                toggleWishlist={(id) => {
+                  if (status === "loading" || status === "unauthenticated") {
+                    console.error(
+                      "You must be logged in to add a product to wishlist"
+                    );
+                    return;
+                  }
+
+                  fetcher({
+                    query: gql`
+                      mutation ToggleWishlistItem($id: String!) {
+                        toggleWishlistItem(id: $id)
+                      }
+                    `,
+                    variables: {
+                      id,
+                    },
+                  }).then(() => mutate());
+                }}
+              />
+            ))
+          ) : (
+            <pre>Loading...</pre>
+          )}
         </div>
       </section>
     </div>

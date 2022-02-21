@@ -49,6 +49,44 @@ export const resolvers = {
       return data;
     },
   },
+  Mutation: {
+    toggleWishlistItem: async (parent, args, context, info) => {
+      if (context.session) {
+        let wishlistItem = await prisma.wishlistItem.findFirst({
+          where: {
+            user: {
+              email: context.session.user.email,
+            },
+            product: {
+              id: args.id,
+            },
+          },
+        });
+
+        if (wishlistItem !== null) {
+          wishlistItem = await prisma.wishlistItem.delete({
+            where: {
+              userEmail_productId: {
+                userEmail: context.session.user.email,
+                productId: args.id,
+              },
+            },
+          });
+        } else {
+          wishlistItem = await prisma.wishlistItem.create({
+            data: {
+              productId: args.id,
+              userEmail: context.session.user.email,
+            },
+          });
+        }
+
+        return true;
+      }
+
+      throw new Error("You must be authenticated to access wishlist!");
+    },
+  },
   Product: {
     isWishlisted: async (parent, args, context, info) => {
       if (context.session) {

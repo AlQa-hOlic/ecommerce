@@ -73,10 +73,10 @@ model Product {
 model WishlistItem {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userEmail String?
+  user      User?    @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, productId])
+  @@unique([userEmail, productId])
 }

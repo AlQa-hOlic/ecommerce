@@ -1,9 +1,10 @@
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
 const ProductCard = (props) => {
-  const { name, imageUrl, price } = props.product;
-  // console.log(props.product);
+  const { id, name, imageUrl, price, isWishlisted } = props.product;
+  const { status } = useSession();
   return (
     <div className="flex flex-col">
       <figure className="group mb-2 flex-grow relative aspect-square">
@@ -35,18 +36,39 @@ const ProductCard = (props) => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
               />
             </svg>
+            {/* Tick svg */}
+            {/* <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg> */}
           </a>
           <a
             href="#"
-            className="cursor-pointer text-gray-800 hover:text-red-400"
+            onClick={(e) => {
+              e.preventDefault();
+              props.toggleWishlist(id);
+            }}
+            className={`cursor-pointer ${
+              isWishlisted ? "text-red-400" : "text-gray-800 hover:text-red-400"
+            }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
-              fill="none"
+              fill={isWishlisted ? "currentColor" : "none"}
               viewBox="0 0 24 24"
               stroke="currentColor"
             >

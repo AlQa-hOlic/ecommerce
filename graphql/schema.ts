@@ -9,6 +9,7 @@ export const typeDefs = gql`
 
   type Mutation {
     logout: Boolean
+    toggleWishlistItem(id: String!): Boolean
   }
 
   type User {
