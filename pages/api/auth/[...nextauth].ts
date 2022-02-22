@@ -20,27 +20,23 @@ export default NextAuth({
       from: process.env.EMAIL_FROM,
     }),
   ],
-  pages: {},
   session: { strategy: "jwt" },
-  events: {
-    createUser: async ({ user }) => {
-      if (user.email === process.env.ADMIN_EMAIL) {
-        await prisma.user.update({
-          where: {
-            email: user.email,
-          },
-          data: {
-            role: "ADMIN",
-          },
-        });
-      }
-    },
-  },
   callbacks: {
     async jwt({ token, user, account, profile, isNewUser }) {
       if (account?.accessToken) {
         token.accessToken = account.accessToken;
       }
+
+      if (isNewUser) {
+        let dbUser = await prisma.user.update({
+          where: { email: user.email },
+          data: {
+            role: process.env.ADMIN_EMAIL === user.email ? "ADMIN" : "USER",
+          },
+        });
+        user.role = dbUser.role;
+      }
+
       if (user?.role) {
         token.role = user.role;
       }
