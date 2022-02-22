@@ -11,7 +11,7 @@ export default NextAuth({
       server: {
         host: process.env.EMAIL_SERVER_HOST,
         port: process.env.EMAIL_SERVER_PORT,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         auth: {
           user: process.env.EMAIL_SERVER_USER,
           pass: process.env.EMAIL_SERVER_PASSWORD,
@@ -22,6 +22,20 @@ export default NextAuth({
   ],
   pages: {},
   session: { strategy: "jwt" },
+  events: {
+    createUser: async ({ user }) => {
+      if (user.email === process.env.ADMIN_EMAIL) {
+        prisma.user.update({
+          where: {
+            email: user.email,
+          },
+          data: {
+            role: "ADMIN",
+          },
+        });
+      }
+    },
+  },
   callbacks: {
     async jwt({ token, user, account, profile, isNewUser }) {
       if (account?.accessToken) {
