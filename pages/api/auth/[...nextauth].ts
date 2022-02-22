@@ -25,7 +25,7 @@ export default NextAuth({
   events: {
     createUser: async ({ user }) => {
       if (user.email === process.env.ADMIN_EMAIL) {
-        prisma.user.update({
+        await prisma.user.update({
           where: {
             email: user.email,
           },
