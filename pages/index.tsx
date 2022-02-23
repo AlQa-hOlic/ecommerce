@@ -1,46 +1,16 @@
 import { useEffect } from "react";
 import { NextPage } from "next";
 import Image from "next/image";
-import useSWR from "swr";
-import { useSession } from "next-auth/react";
-import { fetcher, gql } from "../graphql/fetcher";
 import smoothscroll from "smoothscroll-polyfill";
 
 import Header from "../components/header";
 import ProductCard from "../components/product-card";
+import { useProducts } from "../lib/api";
 
 const Index: NextPage = () => {
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
-
-  const { data, error, mutate } = useSWR(gql`
-    query {
-      products {
-        id
-        name
-        imageUrl
-        isWishlisted
-        price
-      }
-    }
-  `);
-
-  const { status } = useSession();
-
-  // if (status === "loading") return <pre>Loading....</pre>;
-  // if (status === "unauthenticated")
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <button
-  //         tabIndex={0}
-  //         className="px-3 py-2 rounded text-white bg-primary-dark hover:bg-primary focus:bg-primary focus:ring-2 focus:ring-green-400 focus:outline-none"
-  //         onClick={() => signIn()}
-  //       >
-  //         Login
-  //       </button>
-  //     </div>
-  //   );
 
   return (
     <div className="text-gray-900 bg-gray-50 bg-gradient-to-br from-white to-green-50 min-h-screen">
@@ -130,42 +100,34 @@ const Index: NextPage = () => {
         <h1 className="text-left text-3xl tracking-tight font-bold text-gray-700">
           Our Products
         </h1>
-        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4">
-          {error ? (
-            <pre>{JSON.stringify(error)}</pre>
-          ) : data ? (
-            data.products.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                toggleWishlist={(id) => {
-                  if (status === "loading" || status === "unauthenticated") {
-                    console.error(
-                      "You must be logged in to add a product to wishlist"
-                    );
-                    return;
-                  }
-
-                  fetcher({
-                    query: gql`
-                      mutation ToggleWishlistItem($id: String!) {
-                        toggleWishlistItem(id: $id)
-                      }
-                    `,
-                    variables: {
-                      id,
-                    },
-                  }).then(() => mutate());
-                }}
-              />
-            ))
-          ) : (
-            <pre>Loading...</pre>
-          )}
-        </div>
+        <ProductGrid />
       </section>
     </div>
   );
 };
+
+function ProductGrid() {
+  const { products, error, toggleWishlist } = useProducts();
+
+  if (error) {
+    return (
+      <pre className="py-4 w-full whitespace-nowrap text-ellipsis overflow-hidden">
+        {JSON.stringify(error)}
+      </pre>
+    );
+  }
+
+  if (!products) {
+    return <pre className="py-4">Loading...</pre>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4">
+      {products.map((p) => (
+        <ProductCard key={p.id} product={p} toggleWishlist={toggleWishlist} />
+      ))}
+    </div>
+  );
+}
 
 export default Index;

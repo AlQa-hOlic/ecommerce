@@ -14,6 +14,7 @@ const ProductCard = (props) => {
           blurDataURL={`/_next/image?url=${imageUrl}&w=16&q=1`}
           alt={name}
           className="object-cover rounded overflow-hidden"
+          // group-hover:scale-[1.2] transition-transform duration-300 ease-out
           loading="lazy"
           layout="fill"
         />
