@@ -1,0 +1,4 @@
+{
+  "globalImports": ["styles/main.css"],
+  "staticPath": "public"
+}
