@@ -65,6 +65,8 @@ model Product {
   sku           String         @unique @default(uuid())
   imageUrl      String
   price         Float
+  tags          String         @default("")
+  stock         Boolean        @default(true)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   wishlistItems WishlistItem[]

@@ -1,22 +1,72 @@
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import React, { FormEvent, useState } from "react";
+import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { status } = useSession();
   const [email, setEmail] = useState("");
-  console.log(router.query);
-  return (
-    <div
-      className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8
-    bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
-    >
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+
+  const handleSignin = (e: FormEvent) => {
+    e.preventDefault();
+    signIn("email", {
+      email,
+      callbackUrl: "/",
+    });
+  };
+
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900">
         <svg
-          className="mx-auto text-primary dark:text-primary-dark"
-          width="64"
-          height="64"
-          view-box="0 0 64 64"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          style={{
+            margin: "auto",
+            background: "none",
+            display: "block",
+            shapeRendering: "auto",
+          }}
+          width="151px"
+          height="151px"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r="32"
+            strokeWidth="8"
+            stroke="#9ca3af"
+            strokeDasharray="50.26548245743669 50.26548245743669"
+            fill="none"
+            strokeLinecap="round"
+          >
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              repeatCount="indefinite"
+              dur="1s"
+              keyTimes="0;1"
+              values="0 50 50;360 50 50"
+            ></animateTransform>
+          </circle>
+        </svg>
+      </div>
+    );
+  }
+
+  if (status === "authenticated") {
+    router.push("/");
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col justify-center py-12 px-2 lg:px-8 bg-slate-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <div className="sm:mx-auto sm:w-full flex flex-col items-center">
+        <svg
+          className="h-24 w-24 text-[#5B9270] dark:text-[#79ad8d]"
+          viewBox="0 0 64 64"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -37,50 +87,40 @@ export default function LoginPage() {
             fill="currentColor"
           />
         </svg>
-        <h2 className="mt-2 text-center text-3xl text-gray-600 dark:text-gray-200 font-extrabold">
+        <h3 className="font-normal text-2xl text-[#5B9270] dark:text-[#79ad8d]">
           Embrandiri&#39;s Kitchen
-        </h2>
-      </div>
-
-      <div className="mt-8 mx-auto w-full max-w-md">
+        </h3>
         {typeof router.query.verifyEmail !== "undefined" && (
-          <div className="mb-4 flex justify-between w-full px-4 py-2 text-base font-medium text-left text-green-900 bg-green-100 rounded-lg">
+          <div className="mt-4 px-4 py-2 block w-full sm:max-w-md text-base font-medium text-left text-green-900 bg-green-100 dark:text-gray-800 dark:bg-[#79ad8d] rounded whitespace-nowrap text-ellipsis overflow-hidden">
             <span>A sign in link has been sent to your email address.</span>
           </div>
         )}
-        <div className="py-8 px-4 shadow rounded-lg bg-gray-100 dark:bg-gray-800">
-          <form
-            className="space-y-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              signIn("email", {
-                email,
-                callbackUrl: "/",
-              });
-            }}
-          >
+        <div className="mt-4 p-6 w-full sm:max-w-md bg-white dark:bg-gray-800 rounded shadow">
+          <form className="space-y-6" onSubmit={handleSignin}>
             <div>
-              <label className="block text-sm">Email</label>
+              <label
+                className="block text-slate-500 dark:text-gray-300 text-sm"
+                htmlFor="email"
+              >
+                Enter your Email
+              </label>
               <input
                 id="email"
                 type="email"
-                placeholder="Enter your email..."
-                className="mt-1 p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 block w-full shadow-sm sm:text-sm  rounded-md
-                bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-700"
-                required
+                placeholder="someuser@embrandiris.com"
+                name="email"
+                autoFocus
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="relative w-full p-2 mt-2 text-left sm:text-sm bg-gray-50 dark:bg-gray-900 dark:ring-slate-700 rounded-sm cursor-default focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] dark:focus:ring-[#79ad8d] transition-shadow duration-200 overflow-hidden"
               />
             </div>
-
-            <div>
-              <button
-                type="submit"
-                className="inline-flex w-full justify-center items-center px-4 py-2 border border-transparent text-sm uppercase font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-500 text-gray-100 hover:bg-gray-600 dark:bg-gray-900 dark:hover:bg-gray-900 border-gray-300 dark:border-gray-900"
-              >
-                Login
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="relative w-full p-2 uppercase text-center tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] dark:text-gray-900 dark:bg-[#79ad8d] dark:hover:bg-[#5B9270] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
+            >
+              Verify Email
+            </button>
           </form>
         </div>
       </div>
