@@ -9,11 +9,6 @@ export default function Dashboard(props) {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
 
-  if (status === "unauthenticated") {
-    router.push("/login");
-    return null;
-  }
-
   if (status === "loading") {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -53,6 +48,11 @@ export default function Dashboard(props) {
         </svg>
       </div>
     );
+  }
+
+  if (status === "unauthenticated") {
+    router.push("/login");
+    return null;
   }
 
   if (session.user.role !== "ADMIN") {
@@ -264,7 +264,7 @@ export default function Dashboard(props) {
                         disabled
                         className="p-2 text-gray-400 select-none whitespace-nowrap text-ellipsis overflow-hidden"
                       >
-                        Welcome, {session.user.name || session.user.email}
+                        Signed in as {session.user.name || session.user.email}
                       </Menu.Item>
                       <Menu.Item
                         as="li"
@@ -376,7 +376,7 @@ function NavItems() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
           ),

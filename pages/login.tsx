@@ -6,13 +6,19 @@ export default function LoginPage() {
   const router = useRouter();
   const { status } = useSession();
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSignin = (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     signIn("email", {
       email,
       callbackUrl: "/",
-    });
+    })
+      .catch((e) => {
+        // Handle login failure
+      })
+      .finally(() => setLoading(false));
   };
 
   if (status === "loading") {
@@ -62,10 +68,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 px-2 lg:px-8 bg-slate-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="sm:mx-auto sm:w-full flex flex-col items-center">
+    <div className="min-h-screen flex flex-col justify-center py-12 px-4 lg:px-8 bg-slate-50 text-gray-900">
+      <div className="sm:mx-auto -mt-24 sm:w-full flex flex-col items-center">
         <svg
-          className="h-24 w-24 text-[#5B9270] dark:text-[#79ad8d]"
+          className="h-24 w-24 text-[#5B9270]"
           viewBox="0 0 64 64"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -87,38 +93,58 @@ export default function LoginPage() {
             fill="currentColor"
           />
         </svg>
-        <h3 className="font-normal text-2xl text-[#5B9270] dark:text-[#79ad8d]">
+        <h3 className="font-normal text-2xl text-[#5B9270]">
           Embrandiri&#39;s Kitchen
         </h3>
         {typeof router.query.verifyEmail !== "undefined" && (
-          <div className="mt-4 px-4 py-2 block w-full sm:max-w-md text-base font-medium text-left text-green-900 bg-green-100 dark:text-gray-800 dark:bg-[#79ad8d] rounded whitespace-nowrap text-ellipsis overflow-hidden">
+          <div className="mt-4 px-4 py-2 block w-full sm:max-w-md text-base font-medium text-left text-green-900 bg-green-100 rounded whitespace-nowrap text-ellipsis overflow-hidden">
             <span>A sign in link has been sent to your email address.</span>
           </div>
         )}
-        <div className="mt-4 p-6 w-full sm:max-w-md bg-white dark:bg-gray-800 rounded shadow">
+        <div className="mt-4 p-6 w-full sm:max-w-md bg-white rounded shadow">
           <form className="space-y-6" onSubmit={handleSignin}>
             <div>
-              <label
-                className="block text-slate-500 dark:text-gray-300 text-sm"
-                htmlFor="email"
-              >
+              <label className="block text-slate-500 text-sm" htmlFor="email">
                 Enter your Email
               </label>
               <input
                 id="email"
                 type="email"
-                placeholder="someuser@embrandiris.com"
                 name="email"
                 autoFocus
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="relative w-full p-2 mt-2 text-left sm:text-sm bg-gray-50 dark:bg-gray-900 dark:ring-slate-700 rounded-sm cursor-default focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] dark:focus:ring-[#79ad8d] transition-shadow duration-200 overflow-hidden"
+                className="relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm border-2 border-gray-200 placeholder-gray-500 bg-gray-50 rounded-sm cursor-default focus:outline-none focus:bg-white focus:border-transparent focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
               />
             </div>
             <button
               type="submit"
-              className="relative w-full p-2 uppercase text-center tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] dark:text-gray-900 dark:bg-[#79ad8d] dark:hover:bg-[#5B9270] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
+              disabled={loading}
+              className="relative w-full p-3 flex justify-center uppercase tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
             >
+              {loading && (
+                <svg
+                  className="animate-spin mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              )}
               Verify Email
             </button>
           </form>
