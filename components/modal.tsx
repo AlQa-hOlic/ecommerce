@@ -38,7 +38,7 @@ export default function Modal(props: ModalProps) {
             leaveFrom="opacity-100 translate-y-0 md:scale-100"
             leaveTo="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
           >
-            <div className="flex transform transition w-full text-left md:mt-32 md:align-middle md:inline-block md:max-w-2xl lg:max-w-4xl">
+            <div className="flex transform transition w-full md:w-auto text-left md:mt-32 md:align-middle md:inline-block md:max-w-2xl lg:max-w-4xl">
               <div className="p-4 relative w-full flex flex-col md:rounded-lg overflow-hidden bg-gray-50 text-gray-900">
                 <div className="mb-2 w-full flex justify-between items-center">
                   <div className="grow">

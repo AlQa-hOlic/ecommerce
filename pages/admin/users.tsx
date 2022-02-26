@@ -6,8 +6,8 @@ import Dashboard from "../../components/dashboard";
 import Modal from "../../components/modal";
 
 export default function AdminUsersPage() {
-  const [modalOpen, setModelOpen] = useState(false);
   const [editUser, setEditUser] = useState(null);
+  const [deleteUser, setDeleteUser] = useState(null);
 
   const { data, error, mutate } = useSWR("/api/users", (url) =>
     fetch(url, {
@@ -28,16 +28,64 @@ export default function AdminUsersPage() {
   return (
     <Dashboard>
       <Modal
-        title={editUser ? "Edit User" : "Add User"}
-        open={modalOpen}
-        setOpen={setModelOpen}
+        title="Are you sure?"
+        open={deleteUser !== null}
+        setOpen={(val) => {
+          if (!val) setDeleteUser(null);
+        }}
       >
-        <Form
+        <div className="flex flex-col justify-end py-4">
+          <p className="mb-4 text-gray-700 min-w-[32rem]">
+            User will be deleted permanently!
+          </p>
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={() => {
+                setDeleteUser(null);
+              }}
+              className="relative p-2 flex justify-center uppercase tracking-widest text-sm text-white bg-gray-600 hover:bg-gray-500 rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                mutate(
+                  data.filter((u) => u.id !== deleteUser.id),
+                  false
+                );
+                setDeleteUser(null);
+                fetch("/api/users/" + deleteUser.email, {
+                  method: "DELETE",
+                })
+                  .then((res) => res.json())
+                  .then((data) => {
+                    console.log("Deleted user", data);
+                    mutate();
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                  });
+              }}
+              className="relative p-2 flex justify-center uppercase tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        title="Edit User"
+        open={editUser !== null}
+        setOpen={(val) => {
+          if (!val) setEditUser(null);
+        }}
+      >
+        <EditUserForm
           user={editUser}
           onSubmit={async (body) => {
             mutate(
               data.map((user) => {
-                if (user.email === "test@embrandiris.com") {
+                if (user.email === editUser.email) {
                   return {
                     ...user,
                     name:
@@ -49,12 +97,12 @@ export default function AdminUsersPage() {
               }),
               false
             );
-            await fetch("/api/users/test@embrandiris.com", {
+            await fetch("/api/users/" + editUser.email, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(body),
             });
-            setModelOpen(false);
+            setEditUser(null);
             mutate();
           }}
         />
@@ -124,7 +172,6 @@ export default function AdminUsersPage() {
                     className="text-indigo-600 hover:text-indigo-900"
                     onClick={() => {
                       setEditUser(user);
-                      setModelOpen(true);
                     }}
                   >
                     Edit
@@ -132,22 +179,7 @@ export default function AdminUsersPage() {
                   <button
                     className="text-red-600 hover:text-red-900"
                     onClick={(e) => {
-                      if (!confirm("Are you sure?")) return;
-                      mutate(
-                        data.filter((u) => u.id !== user.id),
-                        false
-                      );
-                      fetch("/api/users/" + user.email, {
-                        method: "DELETE",
-                      })
-                        .then((res) => res.json())
-                        .then((data) => {
-                          console.log("Deleted user", data);
-                          mutate();
-                        })
-                        .catch((err) => {
-                          console.error(err);
-                        });
+                      setDeleteUser(user);
                     }}
                   >
                     Delete
@@ -162,14 +194,14 @@ export default function AdminUsersPage() {
   );
 }
 
-function Form(props) {
+function EditUserForm(props) {
   const [name, setName] = useState(props.user?.name);
   const [role, setRole] = useState(props.user?.role || Object.values(Role)[0]);
   const [loading, setLoading] = useState(false);
 
   return (
     <form
-      className="flex flex-col space-y-2"
+      className="flex flex-col space-y-2 md:w-96"
       onSubmit={async (e) => {
         e.preventDefault();
         setLoading(true);
