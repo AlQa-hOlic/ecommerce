@@ -1,5 +1,6 @@
 import Image from "next/image";
 import useSWR from "swr";
+
 import Dashboard from "../../components/dashboard";
 
 const people = [

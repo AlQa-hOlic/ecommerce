@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "../../../prisma/client";
@@ -8,7 +9,7 @@ export default async function handler(
 ) {
   try {
     const {
-      query: { id },
+      query: { email },
       body: { name, role, image },
       method,
     } = req;
@@ -23,24 +24,24 @@ export default async function handler(
       return;
     }
 
-    if (typeof id !== "string") {
+    if (typeof email !== "string") {
       res.status(400).end("Bad Request");
       return;
     }
 
-    let user;
+    let user: User;
     switch (method) {
       case "GET":
-        user = await prisma.user.findUnique({ where: { id } });
+        user = await prisma.user.findUnique({ where: { email } });
         res.status(200).json(user);
         break;
       case "DELETE":
-        user = await prisma.user.delete({ where: { id } });
+        user = await prisma.user.delete({ where: { email } });
         res.status(200).json(user);
         break;
       case "PUT":
         user = await prisma.user.update({
-          where: { id },
+          where: { email },
           data: {
             name,
             role,

@@ -28,7 +28,8 @@ export default async function handler(
     }
 
     return res.status(200).json(await prisma.product.findMany({ skip, take }));
-  } catch {
-    res.status(500);
+  } catch (e) {
+    console.error(e);
+    res.status(500).end("Internal Server Error");
   }
 }
