@@ -3,7 +3,7 @@ import { useState } from "react";
 import useSWR from "swr";
 
 import Dashboard from "../../components/dashboard";
-import FormModal from "../../components/formModal";
+import Modal from "../../components/modal";
 
 export default function AdminUsersPage() {
   const [modalOpen, setModelOpen] = useState(false);
@@ -27,7 +27,11 @@ export default function AdminUsersPage() {
 
   return (
     <Dashboard>
-      <FormModal open={modalOpen} setOpen={setModelOpen}>
+      <Modal
+        title={editUser ? "Edit User" : "Add User"}
+        open={modalOpen}
+        setOpen={setModelOpen}
+      >
         <Form
           user={editUser}
           onSubmit={async (body) => {
@@ -45,16 +49,16 @@ export default function AdminUsersPage() {
               }),
               false
             );
-            console.log(body);
             await fetch("/api/users/test@embrandiris.com", {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(body),
             });
+            setModelOpen(false);
             mutate();
           }}
         />
-      </FormModal>
+      </Modal>
       <h1 className="mb-4 text-3xl text-gray-700">Users</h1>
       {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
       <div className="overflow-x-auto w-full my-2 -mr-96 rounded-lg shadow bg-white">
@@ -165,7 +169,7 @@ function Form(props) {
 
   return (
     <form
-      className="px-2 sm:px-6 space-y-2 pb-8"
+      className="flex flex-col space-y-2"
       onSubmit={async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -182,12 +186,12 @@ function Form(props) {
         placeholder="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm border-2 border-gray-200 placeholder-gray-500 bg-gray-50 rounded-sm cursor-default focus:outline-none focus:bg-white focus:border-transparent focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
+        className="relative p-2 mt-2 text-left text-gray-900 sm:text-sm border-2 border-gray-200 placeholder-gray-500 bg-gray-50 rounded-sm cursor-default focus:outline-none focus:bg-white focus:border-transparent focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
       />
       <select
         id="role"
         name="role"
-        className="appearance-none relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm border-2 border-gray-200 placeholder-gray-500 bg-gray-50 rounded-sm cursor-default focus:outline-none focus:bg-white focus:border-transparent focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
+        className="appearance-none relative p-2 mt-2 text-left text-gray-900 sm:text-sm border-2 border-gray-200 placeholder-gray-500 bg-gray-50 rounded-sm cursor-default focus:outline-none focus:bg-white focus:border-transparent focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
         onChange={(e) => setRole(Object.values(Role)[e.target.selectedIndex])}
         defaultValue={role}
         style={{
@@ -208,7 +212,7 @@ function Form(props) {
       <button
         type="submit"
         disabled={loading}
-        className="relative w-full p-3 flex justify-center uppercase tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
+        className="relative p-3 flex justify-center uppercase tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
       >
         {loading && (
           <svg

@@ -208,7 +208,7 @@ export default function Dashboard(props) {
                   >
                     <Menu.Items
                       as="ul"
-                      className="origin-top-right absolute right-0 mt-2 w-64 bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+                      className="origin-top-right absolute right-0 mt-2 w-64 bg-white shadow-lg max-h-56 z-20 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
                     >
                       <Menu.Item
                         as="li"
@@ -257,7 +257,7 @@ export default function Dashboard(props) {
                   >
                     <Menu.Items
                       as="ul"
-                      className="origin-top-right absolute right-0 mt-2 w-64 bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+                      className="origin-top-right absolute right-0 mt-2 w-64 bg-white shadow-lg max-h-56 z-20 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
                     >
                       <Menu.Item
                         as="li"
