@@ -17,8 +17,14 @@ export default function AdminUsersPage() {
   );
 
   if (error) {
-    console.error(error);
-    return <Dashboard />;
+    // console.error(error);
+    return (
+      <Dashboard>
+        <div className="w-full h-96 flex justify-center items-center text-gray-500 border-4 border-dashed border-red-200 rounded-lg">
+          Failed to fetch users!
+        </div>
+      </Dashboard>
+    );
   }
 
   if (!data) {

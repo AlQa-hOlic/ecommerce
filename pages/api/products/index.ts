@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 import prisma from "../../../prisma/client";
 
 export default async function handler(
@@ -27,7 +27,8 @@ export default async function handler(
       skip = parseInt(req.query.skip as string);
     }
 
-    return res.status(200).json(await prisma.product.findMany({ skip, take }));
+    res.status(200).json(await prisma.product.findMany({ skip, take }));
+    return;
   } catch (e) {
     console.error(e);
     res.status(500).end("Internal Server Error");

@@ -27,8 +27,10 @@ export default async function handler(
       skip = parseInt(req.query.skip as string);
     }
 
-    return res.status(200).json(await prisma.user.findMany({ skip, take }));
+    res.status(200).json(await prisma.user.findMany({ skip, take }));
+    return;
   } catch {
-    res.status(500);
+    res.status(500).end("Internal Server Error");
+    return;
   }
 }

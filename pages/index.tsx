@@ -359,12 +359,12 @@ export default function IndexPage() {
         </div>
         <div className="hidden md:inline mx-2 rounded-xl overflow-hidden relative max-w-[24rem] w-full aspect-square">
           <Image
-            src="/dal_tadka.jpg"
+            src="https://embrandiris.s3.amazonaws.com/dal_tadka.jpg"
             alt="Dal Tadka"
             // width={3648}
             // height={5472}
             placeholder="blur"
-            blurDataURL={`/_next/image?url=${"/dal_tadka.jpg"}&w=16&q=1`}
+            blurDataURL={`/_next/image?url=${"https://embrandiris.s3.amazonaws.com/dal_tadka.jpg"}&w=16&q=1`}
             layout="fill"
             className="object-cover"
           />
