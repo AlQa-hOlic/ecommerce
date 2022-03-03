@@ -13,21 +13,12 @@ export default async function handler(
       method,
     } = req;
 
-    let session = await getSession({ req });
-    if (!session) {
-      res.status(401).end("Unauthorized");
-      return;
-    }
-    if (session.user.role !== "ADMIN") {
-      res.status(403).end("Forbidden");
-      return;
-    }
-
     if (typeof id !== "string") {
       res.status(400).end("Bad Request");
       return;
     }
 
+    let session = null;
     switch (method) {
       case "GET":
         res
@@ -35,9 +26,29 @@ export default async function handler(
           .json(await prisma.product.findUnique({ where: { id } }));
         break;
       case "DELETE":
+        session = await getSession({ req });
+        if (!session) {
+          res.status(401).end("Unauthorized");
+          return;
+        }
+        if (session.user.role !== "ADMIN") {
+          res.status(403).end("Forbidden");
+          return;
+        }
+
         res.status(200).json(await prisma.product.delete({ where: { id } }));
         break;
       case "PUT":
+        session = await getSession({ req });
+        if (!session) {
+          res.status(401).end("Unauthorized");
+          return;
+        }
+        if (session.user.role !== "ADMIN") {
+          res.status(403).end("Forbidden");
+          return;
+        }
+
         if (typeof imageUrl !== "undefined") {
           // Delete the old image from S3
         }
