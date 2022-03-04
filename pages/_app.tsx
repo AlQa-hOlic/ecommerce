@@ -9,12 +9,12 @@ function _App({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider
       session={session}
-      refetchInterval={0}
+      refetchInterval={300}
       refetchOnWindowFocus={true}
     >
       <SWRConfig
         value={{
-          refreshInterval: 60000,
+          refreshInterval: 0,
         }}
       >
         <Component {...pageProps} />

@@ -1,14 +1,13 @@
-import { useEffect } from "react";
-import smoothscroll from "smoothscroll-polyfill";
+import DefaultLayout from "../layouts/default-layout";
 
 export default function IndexPage(props) {
-  useEffect(() => {
-    smoothscroll.polyfill();
-  }, []);
+  // useEffect(() => {
+  //   smoothscroll.polyfill();
+  // }, []);
 
   return (
-    <div className="text-gray-900 bg-gray-50 min-h-screen">
+    <DefaultLayout>
       <pre>Hello, world!</pre>
-    </div>
+    </DefaultLayout>
   );
 }
