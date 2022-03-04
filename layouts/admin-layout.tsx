@@ -114,7 +114,7 @@ export default function AdminLayout(props) {
       <Sidebar />
       <div className="flex flex-col grow min-h-screen">
         <Header toggleNav={() => setOpen(!open)} />
-        <main className="px-2 lg:px-4 py-4 w-full grow flex flex-col justify-start items-start">
+        <main className="w-full grow flex flex-col justify-start items-start">
           {props.children ? (
             props.children
           ) : (

@@ -24,7 +24,7 @@ export default function DefaultLayout(props) {
   return (
     <div className="flex justify-start items-stretch bg-gray-50">
       <div className="flex flex-col grow min-h-screen">
-        <main className="px-2 lg:px-4 py-4 w-full grow flex flex-col justify-start items-start">
+        <main className="w-full grow flex flex-col justify-start items-start">
           {props.children ? (
             props.children
           ) : (
