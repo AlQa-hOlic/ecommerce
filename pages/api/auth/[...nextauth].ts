@@ -23,7 +23,6 @@ export default NextAuth({
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
-    verifyRequest: "/login?verifyEmail",
   },
   callbacks: {
     async jwt({ token, user, account, profile, isNewUser }) {

@@ -1,75 +1,27 @@
-import React, { FormEvent, useState } from "react";
-import { useSession, signIn } from "next-auth/react";
+import { useState } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
+import { signIn, useSession } from "next-auth/react";
 
-export default function LoginPage() {
+export default function LoginPage(props) {
   const router = useRouter();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSignin = (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    signIn("email", {
-      email,
-      callbackUrl: "/",
-    })
-      .catch((e) => {
-        // Handle login failure
-      })
-      .finally(() => setLoading(false));
-  };
-
-  if (status === "loading") {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          xmlnsXlink="http://www.w3.org/1999/xlink"
-          style={{
-            margin: "auto",
-            background: "none",
-            display: "block",
-            shapeRendering: "auto",
-          }}
-          width="151px"
-          height="151px"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="xMidYMid"
-        >
-          <circle
-            cx="50"
-            cy="50"
-            r="32"
-            strokeWidth="8"
-            stroke="#9ca3af"
-            strokeDasharray="50.26548245743669 50.26548245743669"
-            fill="none"
-            strokeLinecap="round"
-          >
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              repeatCount="indefinite"
-              dur="1s"
-              keyTimes="0;1"
-              values="0 50 50;360 50 50"
-            ></animateTransform>
-          </circle>
-        </svg>
-      </div>
-    );
-  }
-
   if (status === "authenticated") {
-    router.push("/");
+    router.push(session.user.role === "ADMIN" ? "/admin" : "/");
     return null;
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 px-4 lg:px-8 bg-slate-50 text-gray-900">
-      <div className="sm:mx-auto -mt-24 sm:w-full flex flex-col items-center">
+    <div className="pt-12 flex flex-col justify-start items-center min-h-screen space-y-4 text-gray-900 bg-gray-50">
+      <Head>
+        <title>Login | Embrandiri&#39;s Kitchen</title>
+      </Head>
+      <div className="flex justify-center items-center">
         <svg
           className="h-24 w-24 text-[#5B9270]"
           viewBox="0 0 64 64"
@@ -96,59 +48,88 @@ export default function LoginPage() {
         <h3 className="font-normal text-2xl text-[#5B9270]">
           Embrandiri&#39;s Kitchen
         </h3>
-        {typeof router.query.verifyEmail !== "undefined" && (
-          <div className="mt-4 px-4 py-2 block w-full sm:max-w-md text-base font-medium text-left text-green-900 bg-green-100 rounded whitespace-nowrap text-ellipsis overflow-hidden">
-            <span>A sign in link has been sent to your email address.</span>
-          </div>
-        )}
-        <div className="mt-4 p-6 w-full sm:max-w-md bg-white rounded shadow">
-          <form className="space-y-6" onSubmit={handleSignin}>
-            <div>
-              <label className="block text-slate-500 text-sm" htmlFor="email">
-                Enter your Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                autoFocus
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm border-2 border-gray-200 placeholder-gray-500 bg-gray-50 rounded-sm cursor-default focus:outline-none focus:bg-white focus:border-transparent focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="relative w-full p-3 flex justify-center uppercase tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
-            >
-              {loading && (
-                <svg
-                  className="animate-spin mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              )}
-              Verify Email
-            </button>
-          </form>
+      </div>
+      {success && (
+        <div className="mt-4 px-4 py-2 block w-full sm:max-w-md text-base font-medium text-left text-green-900 bg-green-100 rounded whitespace-nowrap text-ellipsis overflow-hidden">
+          <span>A verification link has been sent to your email address.</span>
         </div>
+      )}
+      {error && (
+        <div className="mt-4 px-4 py-2 block w-full sm:max-w-md text-base font-medium text-left text-red-900 bg-red-100 rounded whitespace-nowrap text-ellipsis overflow-hidden">
+          <span>An error has occured! Please try again later.</span>
+        </div>
+      )}
+      <div className="px-4 py-6 bg-white rounded shadow-md w-full max-w-md">
+        <form
+          className="space-y-6"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setLoading(true);
+            let result = await signIn("email", {
+              redirect: false,
+              email,
+              callbackUrl: "/admin",
+            });
+
+            // console.log(result);
+
+            if (result.url === null || result.error !== null || !result.ok) {
+              setLoading(false);
+              setError(true);
+              setSuccess(false);
+              return;
+            }
+
+            setLoading(false);
+            setError(false);
+            setSuccess(true);
+          }}
+        >
+          <div>
+            <label className="block text-slate-500 text-sm" htmlFor="email">
+              Sign in with your Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              autoFocus
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm ring-2 ring-opacity-50 ring-gray-200 placeholder-gray-500 rounded-sm cursor-default focus:outline-none focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="relative w-full p-3 flex justify-center uppercase tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
+          >
+            {loading && (
+              <svg
+                className="animate-spin mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            )}
+            Verify Email
+          </button>
+        </form>
       </div>
     </div>
   );
