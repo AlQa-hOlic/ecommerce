@@ -44,6 +44,7 @@ model User {
   updatedAt     DateTime       @updatedAt
   accounts      Account[]
   wishlistItems WishlistItem[]
+  orders        Order[]
 }
 
 model VerificationToken {
@@ -70,6 +71,7 @@ model Product {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   wishlistItems WishlistItem[]
+  orders        Order[]        @relation(references: [id])
 }
 
 model WishlistItem {
@@ -81,4 +83,23 @@ model WishlistItem {
   product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userEmail, productId])
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  status    OrderStatus @default(PAYMENT_INITIATED)
+  userEmail String?
+  user      User?       @relation(fields: [userEmail], references: [email], onDelete: SetNull)
+  products  Product[]   @relation(references: [id])
+}
+
+enum OrderStatus {
+  PAYMENT_INITIATED
+  PAYMENT_ERROR
+  PAYMENT_COMPLETED
+  ORDER_CONFIRMED
+  // DELIVERY_INITIATED
+  ORDER_COMPLETED
 }

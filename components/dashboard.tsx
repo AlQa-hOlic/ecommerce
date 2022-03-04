@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu, Transition, Dialog } from "@headlessui/react";
 import { signOut, useSession } from "next-auth/react";
+import Head from "next/head";
 
 export default function Dashboard(props) {
   const router = useRouter();
@@ -62,6 +63,9 @@ export default function Dashboard(props) {
 
   return (
     <div className="flex justify-start items-stretch bg-gray-50">
+      <Head>
+        <title>Dashboard</title>
+      </Head>
       <Transition.Root show={open} as={Fragment}>
         <Dialog
           as="div"
