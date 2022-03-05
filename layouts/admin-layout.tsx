@@ -109,7 +109,7 @@ export default function AdminLayout(props) {
   }
 
   return (
-    <div className="flex justify-start items-stretch bg-gray-50">
+    <div className="relative flex justify-start items-stretch bg-gray-50">
       <MobileNav open={open} setOpen={setOpen} />
       <Sidebar />
       <div className="flex flex-col grow min-h-screen">
@@ -233,8 +233,8 @@ function MobileNav(props) {
 
 function Sidebar(props) {
   return (
-    <aside className="hidden md:flex md:shrink-0 min-h-screen max-w-xs w-full border-r border-gray-100">
-      <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto bg-white">
+    <aside className="sticky top-0 z-40 hidden md:flex md:shrink-0 min-h-screen max-w-xs md:w-full self-start bg-white border-r border-gray-100">
+      <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto ">
         <div className="flex items-center flex-shrink-0 px-4">
           <Link href="/admin">
             <a>
@@ -256,60 +256,63 @@ function Header(props) {
   const router = useRouter();
   const { data: session } = useSession();
   return (
-    <header className="px-4 h-16 w-full flex justify-between items-center bg-white border-b border-gray-100">
-      <div className="">
-        <button
-          className="md:hidden text-gray-600 focus:outline-none"
-          onClick={() => props.toggleNav?.()}
-        >
-          <span className="sr-only">Open sidebar</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+    <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
+      <div className="px-4 h-16 w-full flex justify-between items-center">
+        <div className="flex space-x-2">
+          <button
+            className="md:hidden text-gray-600 focus:outline-none"
+            onClick={() => props.toggleNav?.()}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h7"
-            />
-          </svg>
-        </button>
-      </div>
+            <span className="sr-only">Open sidebar</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h7"
+              />
+            </svg>
+          </button>
+          {/* <h1 className="text-2xl text-gray-600">Dashboard</h1> */}
+        </div>
 
-      <div className="flex space-x-4">
-        <p className="text-gray-400">
-          {/* <span className="md:inline hidden">Signed in as </span> */}
-          {session.user.name || session.user.email}
-        </p>
-        <button
-          className="text-gray-500"
-          onClick={async () => {
-            const { url } = await signOut({
-              redirect: false,
-              callbackUrl: "/login",
-            });
-            router.push(url);
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+        <div className="flex space-x-4">
+          <p className="text-gray-400">
+            {/* <span className="md:inline hidden">Signed in as </span> */}
+            {session.user.name || session.user.email}
+          </p>
+          <button
+            className="text-gray-500"
+            onClick={async () => {
+              const { url } = await signOut({
+                redirect: false,
+                callbackUrl: "/login",
+              });
+              router.push(url);
+            }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
     </header>
   );

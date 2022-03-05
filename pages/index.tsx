@@ -7,7 +7,9 @@ export default function IndexPage(props) {
 
   return (
     <DefaultLayout>
-      <pre>Hello, world!</pre>
+      <div className="min-h-[800rem]">
+        <pre>Hello, world!</pre>
+      </div>
     </DefaultLayout>
   );
 }

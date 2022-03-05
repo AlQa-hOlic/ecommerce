@@ -15,7 +15,68 @@ export default function AdminPage(props) {
   return (
     <AdminLayout>
       <div className="w-full mt-8 px-4 flex flex-col">
-        <h1 className="mb-4 text-3xl text-gray-700">Dashboard</h1>
+        {/* <h1 className="mb-4 text-3xl text-gray-700">Dashboard</h1> */}
+        <nav className="flex" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-3">
+            <li className="inline-flex items-center">
+              <a
+                href="#"
+                className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              >
+                <svg
+                  className="mr-2 w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                Dashboard
+              </a>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <svg
+                  className="w-6 h-6 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                <a
+                  href="#"
+                  className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                >
+                  Products
+                </a>
+              </div>
+            </li>
+            <li aria-current="page">
+              <div className="flex items-center">
+                <svg
+                  className="w-6 h-6 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                <span className="ml-1 text-sm font-medium text-gray-400 md:ml-2 dark:text-gray-500">
+                  Edit
+                </span>
+              </div>
+            </li>
+          </ol>
+        </nav>
         <div className="my-2 mx-auto w-full flex flex-wrap">
           {[
             {
@@ -214,195 +275,133 @@ export default function AdminPage(props) {
             </tbody>
           </table>
         </div>
-      </div>
-    </AdminLayout>
-  );
-}
-
-export function Example() {
-  return (
-    <>
-      <div className="w-full -mx-4 px-4 py-4 overflow-x-auto">
-        <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-          <table className="min-w-full leading-normal">
-            <thead>
-              <tr>
-                <th className="max-w-xl w-full px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  User
-                </th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Rol
-                </th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Created at
-                </th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="max-w-xl w-full px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 w-10 h-10">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        className="w-full h-full rounded-full"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                        alt=""
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Vera Carpenter
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap">Admin</p>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap">
-                    Jan 21, 2020
-                  </p>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                    <span
-                      aria-hidden
-                      className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                    ></span>
-                    <span className="relative">Activo</span>
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 w-10 h-10">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        className="w-full h-full rounded-full"
-                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                        alt=""
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Blake Bowman
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap">Editor</p>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap">
-                    Jan 01, 2020
-                  </p>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                    <span
-                      aria-hidden
-                      className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                    ></span>
-                    <span className="relative">Activo</span>
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 w-10 h-10">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        className="w-full h-full rounded-full"
-                        src="https://images.unsplash.com/photo-1540845511934-7721dd7adec3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                        alt=""
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Dana Moore
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap">Editor</p>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap">
-                    Jan 10, 2020
-                  </p>
-                </td>
-                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <span className="relative inline-block px-3 py-1 font-semibold text-orange-900 leading-tight">
-                    <span
-                      aria-hidden
-                      className="absolute inset-0 bg-orange-200 opacity-50 rounded-full"
-                    ></span>
-                    <span className="relative">Suspended</span>
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-5 py-5 bg-white text-sm">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 w-10 h-10">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        className="w-full h-full rounded-full"
-                        src="https://images.unsplash.com/photo-1522609925277-66fea332c575?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&h=160&w=160&q=80"
-                        alt=""
-                      />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Alonzo Cox
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-5 py-5 bg-white text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap">Admin</p>
-                </td>
-                <td className="px-5 py-5 bg-white text-sm">
-                  <p className="text-gray-900 whitespace-no-wrap">
-                    Jan 18, 2020
-                  </p>
-                </td>
-                <td className="px-5 py-5 bg-white text-sm">
-                  <span className="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
-                    <span
-                      aria-hidden
-                      className="absolute inset-0 bg-red-200 opacity-50 rounded-full"
-                    ></span>
-                    <span className="relative">Inactive</span>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
-            <span className="text-xs xs:text-sm text-gray-900">
-              Showing 1 to 4 of 50 Entries
-            </span>
-            <div className="inline-flex mt-2 xs:mt-0">
-              <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                Prev
-              </button>
-              <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
-                Next
-              </button>
+        <div className="my-2 flex flex-col items-center">
+          <span className="text-sm text-gray-700">
+            Showing <span className="font-semibold text-gray-900">1</span> to{" "}
+            <span className="font-semibold text-gray-900">10</span> of{" "}
+            <span className="font-semibold text-gray-900">100</span> Entries
+          </span>
+          <div className="inline-flex mt-2 xs:mt-0">
+            <button className="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-r border-0 hover:bg-gray-100 hover:text-gray-700">
+              <svg
+                className="mr-2 w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+              Prev
+            </button>
+            <button className="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-500 bg-white rounded-r border-0 hover:bg-gray-100 hover:text-gray-700">
+              Next
+              <svg
+                className="ml-2 w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div className="my-4 p-4 bg-white rounded shadow w-full">
+          <label
+            htmlFor="email-adress-icon"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+          >
+            Your Email
+          </label>
+          <div className="relative mb-2">
+            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+              <svg
+                className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+              </svg>
             </div>
+            <input
+              type="text"
+              id="email-adress-icon"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] block w-full pl-10 p-2.5"
+              placeholder="name@flowbite.com"
+            />
+          </div>
+          <div className="relative mb-4">
+            <label
+              htmlFor="username-error"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >
+              Your name
+            </label>
+            <input
+              type="text"
+              id="username-error"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] block w-full p-2.5"
+              placeholder="John doe"
+            />
+            <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+              <span className="font-medium">Oops!</span> Username already taken!
+            </p>
+          </div>
+          <label
+            htmlFor="message"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+          >
+            Your message
+          </label>
+          <textarea
+            id="message"
+            rows={4}
+            className="mb-4 block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270]"
+            placeholder="Leave a comment..."
+          ></textarea>
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-green-900 bg-green-100 border border-transparent rounded-md hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+            >
+              Save Changes
+            </button>
+            <button
+              disabled
+              type="button"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-2.5 text-center mr-2 inline-flex items-center"
+            >
+              <svg
+                role="status"
+                className="inline mr-3 w-4 h-4 text-white animate-spin"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="#E5E7EB"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentColor"
+                />
+              </svg>
+              Loading...
+            </button>
           </div>
         </div>
       </div>
-    </>
+    </AdminLayout>
   );
 }
