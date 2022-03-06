@@ -2,14 +2,41 @@ import { useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react";
+import { useForm } from "react-hook-form";
 
 export default function LoginPage(props) {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
+
   const [loading, setLoading] = useState(false);
+  const [verificationLinkSent, setVerificationLinkSent] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    // console.log(data);
+    if (loading) return;
+    setLoading(true);
+    let result = await signIn("email", {
+      redirect: false,
+      email: data["email"],
+      callbackUrl: "/admin",
+    });
+    setLoading(false);
+
+    if (result.url === null || result.error !== null || !result.ok) {
+      setVerificationLinkSent(false);
+      setError("email", {});
+      return;
+    }
+
+    setVerificationLinkSent(true);
+  };
 
   if (status === "authenticated") {
     router.push(session.user.role === "ADMIN" ? "/admin" : "/");
@@ -49,42 +76,18 @@ export default function LoginPage(props) {
           Embrandiri&#39;s Kitchen
         </h3>
       </div>
-      {success && (
+      {verificationLinkSent && (
         <div className="mt-4 px-4 py-2 block w-full sm:max-w-md text-base font-medium text-left text-green-900 bg-green-100 rounded whitespace-nowrap text-ellipsis overflow-hidden">
           <span>A verification link has been sent to your email address.</span>
         </div>
       )}
-      {error && (
+      {errors["email"] && (
         <div className="mt-4 px-4 py-2 block w-full sm:max-w-md text-base font-medium text-left text-red-900 bg-red-100 rounded whitespace-nowrap text-ellipsis overflow-hidden">
           <span>An error has occured! Please try again later.</span>
         </div>
       )}
       <div className="px-4 py-6 bg-white rounded shadow-md w-full max-w-md">
-        <form
-          className="space-y-6"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            let result = await signIn("email", {
-              redirect: false,
-              email,
-              callbackUrl: "/admin",
-            });
-
-            // console.log(result);
-
-            if (result.url === null || result.error !== null || !result.ok) {
-              setLoading(false);
-              setError(true);
-              setSuccess(false);
-              return;
-            }
-
-            setLoading(false);
-            setError(false);
-            setSuccess(true);
-          }}
-        >
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label className="block text-slate-500 text-sm" htmlFor="email">
               Sign in with your Email
@@ -95,15 +98,18 @@ export default function LoginPage(props) {
               name="email"
               autoFocus
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email")}
               className="relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm ring-2 ring-opacity-50 ring-gray-200 placeholder-gray-500 rounded-sm cursor-default focus:outline-none focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="relative w-full p-3 flex justify-center uppercase tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] transition duration-200"
+            className={`relative w-full p-3 flex justify-center uppercase tracking-widest text-sm text-white bg-[#5B9270] hover:bg-[#79ad8d] rounded-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] focus:bg-[#79ad8d] transition duration-200${
+              loading
+                ? " bg-gray-300 hover:bg-gray-300 focus:bg-gray-300 cursor-not-allowed"
+                : ""
+            }`}
           >
             {loading && (
               <svg

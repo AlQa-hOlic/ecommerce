@@ -1,20 +1,34 @@
+import { User } from "@prisma/client";
+import { useState } from "react";
+import useSWR from "swr";
 import Breadcrumb from "../../components/breadcrumb";
 import AdminLayout from "../../layouts/admin-layout";
 
-const people = [
-  {
-    name: "Jane Cooper",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Admin",
-    email: "jane.cooper@example.com",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-  },
-  // More people...
-];
-
 export default function AdminUsersPage(props) {
+  const [filterInput, setFilterInput] = useState("");
+  const [filter, setFilter] = useState("");
+  const { data: users, error } = useSWR<User[]>(
+    `/api/users?page=${1}${
+      filter && filter.trim() !== "" ? "&q=" + filter : ""
+    }`,
+    async (url) => {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // await new Promise((res) => setTimeout(res, 40000));
+      // throw new Error("Hello, world!");
+      const { status, msg, data } = await response.json();
+      if (status !== "ok") {
+        // console.error(msg);
+        throw new Error(msg);
+      }
+      return data;
+    }
+  );
+
   return (
     <AdminLayout>
       <div className="w-full p-4 flex flex-col">
@@ -39,9 +53,15 @@ export default function AdminUsersPage(props) {
             },
           ]}
         />
-        <div className="my-4 bg-white rounded shadow">
+        <div className="my-4 bg-white rounded shadow overflow-hidden">
           <div className="flex items-center p-4 space-x-2">
-            <div className="relative">
+            <form
+              className="relative"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setFilter(filterInput);
+              }}
+            >
               <label htmlFor="table-search" className="sr-only">
                 Search
               </label>
@@ -63,9 +83,11 @@ export default function AdminUsersPage(props) {
                 type="text"
                 id="table-search"
                 className="w-80 pl-10 p-2.5 rounded-sm cursor-default text-left sm:text-sm text-gray-900 placeholder-gray-500 bg-gray-50 ring-2 ring-opacity-50 ring-gray-200 focus:outline-none focus:ring-[#5B9270] transition duration-200 ease-linear"
-                placeholder="Search for items"
+                placeholder="Search for users"
+                value={filterInput}
+                onChange={(e) => setFilterInput(e.target.value)}
               />
-            </div>
+            </form>
           </div>
           <div className="w-full max-w-[calc(100vw-2rem)] md:max-w-[calc(100vw-20rem-2rem)] overflow-scroll">
             <table className="min-w-full divide-y divide-gray-200">
@@ -81,13 +103,7 @@ export default function AdminUsersPage(props) {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Title
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Status
+                    Email
                   </th>
                   <th
                     scope="col"
@@ -95,65 +111,109 @@ export default function AdminUsersPage(props) {
                   >
                     Role
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Created At
+                  </th>
                   <th scope="col" className="relative px-6 py-3">
-                    <span className="sr-only">Edit</span>
+                    <span className="sr-only">Actions</span>
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {people.map((person) => (
-                  <tr key={person.email}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            className="h-10 w-10 rounded-full"
-                            src={person.image}
-                            alt=""
-                          />
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {person.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {person.email}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {person.title}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {person.department}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Active
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {person.role}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a
-                        href="#"
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        Edit
-                      </a>
+                {error ? (
+                  <tr>
+                    <td colSpan={4} className="text-center py-4 text-red-400">
+                      Could not fetch users! Try again later.
                     </td>
                   </tr>
-                ))}
+                ) : users ? (
+                  users.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="text-center py-4 text-gray-400"
+                      >
+                        No results found!
+                      </td>
+                    </tr>
+                  ) : (
+                    users.map((user) => (
+                      <tr key={user.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {user.name || "-"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {user.email}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {user.role === "USER" ? (
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              User
+                            </span>
+                          ) : user.role === "ADMIN" ? (
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                              Admin
+                            </span>
+                          ) : (
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              {user.role}
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(user.createdAt).toLocaleString(undefined, {
+                            hour12: true,
+                            dateStyle: "short",
+                            timeStyle: "short",
+                          })}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <a
+                            href="#"
+                            className="text-gray-400 hover:text-[#79ad8d] focus:text-[#79ad8d]"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-6 w-6"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                              />
+                            </svg>
+                            <span className="sr-only">Edit</span>
+                          </a>
+                        </td>
+                      </tr>
+                    ))
+                  )
+                ) : (
+                  <tr>
+                    <td colSpan={4}>
+                      <svg viewBox="0 0 769 286" fill="none">
+                        <path d="M21 26H747V40H21V26Z" fill="#E5E5E5"></path>
+                        <path d="M21 70H747V84H21V70Z" fill="#E5E5E5"></path>
+                        <path d="M21 114H747V128H21V114Z" fill="#E5E5E5"></path>
+                        <path d="M21 158H747V172H21V158Z" fill="#E5E5E5"></path>
+                        <path d="M21 202H747V216H21V202Z" fill="#E5E5E5"></path>
+                        <path d="M21 246H747V260H21V246Z" fill="#E5E5E5"></path>
+                      </svg>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
-        <div className="my-2 flex flex-col items-center">
+        {/* <div className="my-2 flex flex-col items-center">
           <span className="text-sm text-gray-700">
             Showing <span className="font-semibold text-gray-900">1</span> to{" "}
             <span className="font-semibold text-gray-900">10</span> of{" "}
@@ -191,7 +251,7 @@ export default function AdminUsersPage(props) {
               </svg>
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </AdminLayout>
   );
