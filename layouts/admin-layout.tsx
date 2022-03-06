@@ -133,7 +133,7 @@ function NavItems() {
   return (
     <nav className="flex-1 px-2 space-y-1">
       {routes.map((item) => (
-        <Link href={item.href} key={item.name}>
+        <Link href={item.href} key={item.href}>
           <a
             className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
               router.route === item.href
@@ -192,6 +192,7 @@ function MobileNav(props) {
             >
               <div className="absolute top-0 right-0 -mr-12 pt-2">
                 <button
+                  tabIndex={0}
                   className="ml-1 flex items-center justify-center h-10 w-10 rounded-full text-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                   onClick={() => props.setOpen?.(false)}
                 >

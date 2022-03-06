@@ -10,7 +10,31 @@ export default async function handler(
   try {
     // Get all products
     if (req.method === "GET") {
-      const products = await prisma.product.findMany();
+      const { q, page, size } = req.query;
+      let where = {};
+      if (typeof q === "string" && q.trim() !== "") {
+        where = {
+          OR: [
+            {
+              name: {
+                contains: q,
+              },
+            },
+            {
+              sku: {
+                contains: q,
+              },
+            },
+          ],
+        };
+      }
+
+      const products = await prisma.product.findMany({
+        where,
+        orderBy: {
+          updatedAt: "desc",
+        },
+      });
       return res.status(200).json({ status: "ok", data: products });
     }
 
@@ -19,10 +43,14 @@ export default async function handler(
       // Only ADMIN has access
       let session = await getSession({ req });
       if (!session) {
-        return res.status(401).end("Unauthorized");
+        return res
+          .status(401)
+          .json({ status: "error", msg: "Unauthorized", data: null });
       }
       if (session.user.role !== "ADMIN") {
-        return res.status(403).end("Forbidden");
+        return res
+          .status(403)
+          .json({ status: "error", msg: "Forbidden", data: null });
       }
 
       const { name, imageUrl, price, tags, stock } = req.body;
@@ -48,5 +76,5 @@ export default async function handler(
     });
   }
 
-  return res.status(405).json({ msg: "Method not allowed" });
+  return res.status(405).json({ status: "error", msg: "Method not allowed" });
 }

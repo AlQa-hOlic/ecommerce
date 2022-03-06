@@ -15,6 +15,7 @@ function _App({ Component, pageProps: { session, ...pageProps } }) {
       <SWRConfig
         value={{
           refreshInterval: 0,
+          revalidateOnFocus: false,
         }}
       >
         <Component {...pageProps} />

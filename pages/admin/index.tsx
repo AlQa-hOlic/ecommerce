@@ -1,4 +1,5 @@
 import AdminLayout from "../../layouts/admin-layout";
+
 const people = [
   {
     name: "Jane Cooper",
@@ -11,72 +12,12 @@ const people = [
   },
   // More people...
 ];
+
 export default function AdminPage(props) {
   return (
     <AdminLayout>
       <div className="w-full mt-8 px-4 flex flex-col">
         {/* <h1 className="mb-4 text-3xl text-gray-700">Dashboard</h1> */}
-        <nav className="flex" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            <li className="inline-flex items-center">
-              <a
-                href="#"
-                className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              >
-                <svg
-                  className="mr-2 w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <svg
-                  className="w-6 h-6 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-                <a
-                  href="#"
-                  className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
-                >
-                  Products
-                </a>
-              </div>
-            </li>
-            <li aria-current="page">
-              <div className="flex items-center">
-                <svg
-                  className="w-6 h-6 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-                <span className="ml-1 text-sm font-medium text-gray-400 md:ml-2 dark:text-gray-500">
-                  Edit
-                </span>
-              </div>
-            </li>
-          </ol>
-        </nav>
         <div className="my-2 mx-auto w-full flex flex-wrap">
           {[
             {
@@ -193,6 +134,36 @@ export default function AdminPage(props) {
         </h1>
         {/* Compensate max-width for sidebar and px-2 padding */}
         <div className="bg-white rounded shadow w-full max-w-[calc(100vw-2rem)] md:max-w-[calc(100vw-20rem-2rem)] overflow-scroll">
+          <div className="flex items-center p-4">
+            <label htmlFor="table-search" className="sr-only">
+              Search
+            </label>
+            <div className="relative mt-1">
+              <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                <svg
+                  className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="table-search"
+                className="w-80 pl-10 p-2.5 rounded-sm cursor-default text-left sm:text-sm text-gray-900 placeholder-gray-500 bg-gray-50 ring-2 ring-opacity-50 ring-gray-200 focus:outline-none focus:ring-[#5B9270] transition duration-200 ease-linear"
+                placeholder="Search for items"
+              />
+            </div>
+            <button className="ml-auto px-3 py-2 rounded text-sm uppercase bg-transparent text-[#5B9270] focus:bg-[#5B9270] hover:bg-[#79ad8d] focus:text-white hover:text-white transition-colors duration-200 ease-linear">
+              Add Product
+            </button>
+          </div>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
