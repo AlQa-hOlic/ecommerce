@@ -1,20 +1,12 @@
 import { useState } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 
 import DefaultLayout from "../layouts/default-layout";
-
-const staticCart = [
-  {
-    id: "ckzwccaiu0009r7s0pfgtr72m",
-    quantity: 2,
-  },
-  {
-    id: "ckzwccaiu0010r7s0bx0vjnin",
-    quantity: 1,
-  },
-];
+import { useCart } from "../lib/context/cart";
 
 export default function CheckoutPage(props) {
+  const { items, setItems } = useCart();
   const [loading, setLoading] = useState(false);
   const {
     register,
@@ -25,6 +17,8 @@ export default function CheckoutPage(props) {
   const onSubmit = async (data) => {
     console.log(data);
   };
+
+  console.log(items);
 
   return (
     <DefaultLayout minimal={true}>
@@ -220,41 +214,78 @@ export default function CheckoutPage(props) {
         <div className="col-span-1 lg:col-span-4 order-first lg:order-last">
           <h4 className="text-3xl text-gray-700 mb-5">Order Summary</h4>
           <div className="p-4 rounded-md shadow bg-white space-y-5">
-            {staticCart.map((item) => {
+            {items.map((item) => {
               return (
                 <div
                   key={item.id}
-                  className="grid grid-cols-6 overflow-hidden gap-6"
+                  className="grid grid-cols-4 overflow-hidden gap-6"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    className="block col-span-1 aspect-square rounded bg-gray-600"
-                    src={null}
-                    alt=""
-                  />
-                  <div className="col-span-5">
+                  <div className="block relative col-span-1 aspect-square rounded bg-gray-600 overflow-hidden border border-gray-200">
+                    {/* <img
+                          src="https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg"
+                          alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt."
+                        /> */}
+                    <Image
+                      src={item.imageUrl}
+                      placeholder="blur"
+                      blurDataURL={`/_next/image?url=${item.imageUrl}&w=16&q=1`}
+                      alt={item.name}
+                      className="h-full w-full object-cover object-center"
+                      // group-hover:scale-[1.2] transition-transform duration-300 ease-out
+                      loading="lazy"
+                      layout="fill"
+                    />
+                  </div>
+                  <div className="col-span-3">
                     <div className="flex">
-                      <h6 className="text-sm font-semibold text-gray-800 flex-grow">
-                        {item.id}
+                      <h6 className="text-lg font-normal text-gray-800 flex-grow">
+                        {item.name}
                       </h6>
-                      <button>
-                        <svg
-                          className="w-3"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z" />
-                        </svg>
-                      </button>
                     </div>
                     {/* <p className="text-xs truncate text-gray-600">{item.id}</p> */}
-                    <span className="text-sm text-gray-800">
-                      {item.quantity} &#10799; &#8377;{0}
+                    <span className="text-md text-gray-500">
+                      {item.quantity} &times; &#8377;{item.price.toFixed(2)}
                     </span>
                   </div>
                 </div>
               );
             })}
+            <div className="border-t border-gray-200 py-6 px-4">
+              <div className="flex justify-between text-base font-medium text-gray-900">
+                <p>Subtotal</p>
+                <p>
+                  &#8377;
+                  {items
+                    .reduce(
+                      (total, item) => total + item.price * item.quantity,
+                      0
+                    )
+                    .toFixed(2)}
+                </p>
+              </div>
+              <div className="flex justify-between text-base font-medium text-gray-900">
+                <p>Tax</p>
+                <p>
+                  &#8377;
+                  {items
+                    .reduce((total, item) => total + item.price * 0.08, 0)
+                    .toFixed(2)}
+                </p>
+              </div>
+              <div className="mt-2 flex justify-between text-xl font-bold text-gray-900">
+                <p>Grand Total</p>
+                <p>
+                  &#8377;
+                  {items
+                    .reduce(
+                      (total, item) =>
+                        total + item.price * item.quantity + item.price * 0.08,
+                      0
+                    )
+                    .toFixed(2)}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

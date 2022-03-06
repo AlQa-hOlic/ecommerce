@@ -1,9 +1,13 @@
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
+import { Dialog, Transition } from "@headlessui/react";
 
 import Loading from "../components/loading";
+import { useCart } from "../lib/context/cart";
 
 export default function DefaultLayout(props) {
   const { minimal = false } = props;
@@ -44,6 +48,11 @@ export default function DefaultLayout(props) {
 
 function Header(props) {
   const { isLoggedIn, minimal } = props;
+
+  const [cartView, setCartView] = useState(false);
+
+  const { itemCount } = useCart();
+
   return (
     <header className="z-40 sticky top-0 h-[72px] backdrop-filter backdrop-blur-md bg-white bg-opacity-70">
       <Head>
@@ -86,6 +95,7 @@ function Header(props) {
         </Link>
         {!minimal && (
           <nav className="flex-grow h-full flex justify-between items-center">
+            <CartView open={cartView} setOpen={setCartView} />
             <div className="hidden md:flex">
               {/* <Link href="/">
             <a className="inline-flex mx-2 items-center leading-6 text-gray-500 transition-colors duration-400 hover:text-gray-900">
@@ -129,6 +139,32 @@ function Header(props) {
               </button>
             </form>
             <div className="flex items-center space-x-4 px-2">
+              <a
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCartView(true);
+                }}
+                className="relative cursor-pointer text-gray-400 focus:text-gray-500 hover:text-gray-500"
+              >
+                <span className="sr-only">Cart</span>
+                {itemCount > 0 && (
+                  <div className="absolute inline-block top-0 right-0 bottom-auto left-auto translate-x-2/4 -translate-y-1/2 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 py-1 px-1.5 text-xs leading-none text-center whitespace-nowrap align-baseline font-bold bg-[#5B9270] text-white rounded-full z-10">
+                    {itemCount}
+                  </div>
+                )}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </a>
               <Link href={isLoggedIn ? "/account" : "/login"}>
                 <a className="cursor-pointer text-gray-400 focus:text-gray-500 hover:text-gray-500">
                   <span className="sr-only">My Account</span>
@@ -151,5 +187,265 @@ function Header(props) {
         )}
       </div>
     </header>
+  );
+}
+
+function CartView(props) {
+  const { items, setItems } = useCart();
+  // console.log(items);
+  return (
+    <Transition.Root show={props.open} as={Fragment}>
+      <Dialog
+        as="div"
+        static
+        className="fixed inset-0 flex justify-end z-40"
+        open={props.open}
+        onClose={props.setOpen}
+      >
+        <Transition.Child
+          as={Fragment}
+          enter="transition-opacity ease-linear duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity ease-linear duration-300"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <Dialog.Overlay className="fixed inset-0 bg-gray-800 bg-opacity-75" />
+        </Transition.Child>
+
+        <div className="flex-shrink-0 w-14" aria-hidden="true">
+          {/* Dummy element to force sidebar to shrink to fit close icon */}
+        </div>
+        <Transition.Child
+          as={Fragment}
+          enter="transition ease-in-out duration-300 transform"
+          enterFrom="translate-x-full"
+          enterTo="translate-x-0"
+          leave="transition ease-in-out duration-300 transform"
+          leaveFrom="translate-x-0"
+          leaveTo="translate-x-full"
+        >
+          <div className="relative flex-1 flex flex-col max-w-md w-full pt-5 pb-4 bg-gray-100">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-in-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in-out duration-300"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="absolute top-0 left-0 -ml-12 pt-2">
+                <button
+                  tabIndex={0}
+                  className="ml-1 flex items-center justify-center h-10 w-10 rounded-full text-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                  onClick={() => props.setOpen?.(false)}
+                >
+                  <span className="sr-only">Close sidebar</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </Transition.Child>
+            <div className="flex-shrink-0 flex items-center px-4">
+              <h3 className="font-normal text-xl text-[#5B9270]">
+                Cart Summary
+              </h3>
+            </div>
+            <div className="mt-8 px-4">
+              <div className="flow-root">
+                <ul role="list" className="divide-y divide-gray-200">
+                  {items.map((item) => (
+                    <li className="flex py-6" key={item.id}>
+                      <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                        {/* <img
+                          src="https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg"
+                          alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt."
+                        /> */}
+                        <Image
+                          src={item.imageUrl}
+                          placeholder="blur"
+                          blurDataURL={`/_next/image?url=${item.imageUrl}&w=16&q=1`}
+                          alt={item.name}
+                          className="h-full w-full object-cover object-center"
+                          // group-hover:scale-[1.2] transition-transform duration-300 ease-out
+                          loading="lazy"
+                          layout="fill"
+                        />
+                      </div>
+
+                      <div className="ml-4 flex flex-1 flex-col select-none">
+                        <div>
+                          <div className="flex justify-between text-base font-medium text-gray-900">
+                            <h3>
+                              <a href="#"> {item.name} </a>
+                            </h3>
+                            <p className="ml-4">
+                              &#8377;{(item.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
+                          <p className="mt-1 text-sm text-gray-500">
+                            {item.id}
+                          </p>
+                        </div>
+                        <div className="flex flex-1 items-end justify-between text-sm">
+                          <p className="flex items-center space-x-2 text-gray-500">
+                            <a
+                              onClick={(e) => {
+                                e.preventDefault();
+
+                                let newItems = [...items];
+
+                                let match = newItems.find(
+                                  (_item) => _item.id === item.id
+                                );
+
+                                if (match && match.quantity > 1) {
+                                  match.quantity -= 1;
+                                  setItems(newItems);
+                                }
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M18 12H6"
+                                />
+                              </svg>
+                            </a>
+                            <span>Qty {item.quantity}</span>
+                            <a
+                              onClick={(e) => {
+                                e.preventDefault();
+
+                                let newItems = [...items];
+
+                                let match = newItems.find(
+                                  (_item) => _item.id === item.id
+                                );
+
+                                if (match && match.quantity < 10) {
+                                  match.quantity += 1;
+                                  setItems(newItems);
+                                }
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                />
+                              </svg>
+                            </a>
+                          </p>
+
+                          <div className="flex">
+                            <button
+                              type="button"
+                              className="font-medium text-[#5B9270] hover:text-[#79ad8d]"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                let newItems = items.filter(
+                                  (_item) => _item.id !== item.id
+                                );
+
+                                setItems(newItems);
+                              }}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            {items.length === 0 ? (
+              <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
+                <p className="text-center text-base font-medium text-gray-500">
+                  No items in cart!
+                </p>
+                <div className="mt-6">
+                  <a
+                    onClick={(e) => props.setOpen(false)}
+                    className="flex items-center justify-center rounded-md border border-transparent bg-[#5B9270] hover:bg-[#79ad8d] cursor-pointer px-6 py-3 text-base font-medium text-white shadow-sm"
+                  >
+                    Back to shop
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
+                <div className="flex justify-between text-base font-medium text-gray-900">
+                  <p>Subtotal</p>
+                  <p>
+                    &#8377;
+                    {items
+                      .reduce(
+                        (total, item) => total + item.price * item.quantity,
+                        0
+                      )
+                      .toFixed(2)}
+                  </p>
+                </div>
+                <p className="mt-0.5 text-sm text-gray-500">
+                  Shipping and taxes calculated at checkout.
+                </p>
+                <div className="mt-6">
+                  <Link href="/checkout">
+                    <a className="flex items-center justify-center rounded-md border border-transparent bg-[#5B9270] hover:bg-[#79ad8d] px-6 py-3 text-base font-medium text-white shadow-sm">
+                      Checkout
+                    </a>
+                  </Link>
+                </div>
+                <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+                  <p>
+                    or{" "}
+                    <button
+                      type="button"
+                      className="font-medium text-[#5B9270] hover:text-[#79ad8d]"
+                    >
+                      Continue Shopping<span aria-hidden="true"> &rarr;</span>
+                    </button>
+                  </p>
+                </div>
+              </div>
+            )}
+            <div className="mt-5 px-4 flex-1 h-0 overflow-y-auto"></div>
+          </div>
+        </Transition.Child>
+      </Dialog>
+    </Transition.Root>
   );
 }

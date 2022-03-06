@@ -34,16 +34,15 @@ model Account {
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?        @unique
+  email         String?   @unique
   emailVerified DateTime?
-  role          Role           @default(USER)
-  image         String?        @default("NO_IMAGE")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  role          Role      @default(USER)
+  image         String?   @default("NO_IMAGE")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   accounts      Account[]
-  wishlistItems WishlistItem[]
   orders        Order[]
 }
 
@@ -70,35 +69,23 @@ model Product {
   stock         Boolean        @default(true)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  wishlistItems WishlistItem[]
-  orders        Order[]        @relation(references: [id])
-}
-
-model WishlistItem {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  userEmail String?
-  user      User?    @relation(fields: [userEmail], references: [email], onDelete: Cascade)
-  productId String?
-  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([userEmail, productId])
+  orderProducts OrderProduct[]
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  status    OrderStatus @default(PAYMENT_INITIATED)
-  userName  String
-  address   String
-  city      String
-  state     String
-  pin       String
-  phone     String
-  userEmail String?
-  user      User?       @relation(fields: [userEmail], references: [email], onDelete: SetNull)
-  products  Product[]   @relation(references: [id])
+  id            String         @id @default(cuid())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  status        OrderStatus    @default(PAYMENT_INITIATED)
+  userName      String
+  address       String
+  city          String
+  state         String
+  pin           String
+  phone         String
+  userEmail     String?
+  user          User?          @relation(fields: [userEmail], references: [email], onDelete: SetNull)
+  orderProducts OrderProduct[]
 }
 
 enum OrderStatus {
@@ -109,4 +96,14 @@ enum OrderStatus {
   // DELIVERY_INITIATED
   ORDER_COMPLETED
   ORDER_CANCELLED
+}
+
+model OrderProduct {
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+
+  @@unique([orderId, productId])
 }
