@@ -90,6 +90,12 @@ model Order {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   status    OrderStatus @default(PAYMENT_INITIATED)
+  userName  String
+  address   String
+  city      String
+  state     String
+  pin       String
+  phone     String
   userEmail String?
   user      User?       @relation(fields: [userEmail], references: [email], onDelete: SetNull)
   products  Product[]   @relation(references: [id])

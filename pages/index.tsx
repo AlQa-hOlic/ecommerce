@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import Image from "next/image";
-import useSWR from "swr";
 import smoothscroll from "smoothscroll-polyfill";
 import { Product } from "@prisma/client";
 

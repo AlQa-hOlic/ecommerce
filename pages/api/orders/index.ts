@@ -21,7 +21,7 @@ export default async function handler(
         .json({ status: "error", msg: "Forbidden", data: null });
     }
 
-    // Get all users
+    // Get all orders
     if (req.method === "GET") {
       const { q, page, size } = req.query;
       let where = {};
