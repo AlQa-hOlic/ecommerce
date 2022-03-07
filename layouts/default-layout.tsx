@@ -165,7 +165,7 @@ function Header(props) {
                   />
                 </svg>
               </a>
-              <Link href={isLoggedIn ? "/account" : "/login"}>
+              {/* <Link href={isLoggedIn ? "/account" : "/login"}>
                 <a className="cursor-pointer text-gray-400 focus:text-gray-500 hover:text-gray-500">
                   <span className="sr-only">My Account</span>
                   <svg
@@ -181,7 +181,7 @@ function Header(props) {
                     />
                   </svg>
                 </a>
-              </Link>
+              </Link> */}
             </div>
           </nav>
         )}
