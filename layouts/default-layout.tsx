@@ -265,7 +265,7 @@ function CartView(props) {
                 Cart Summary
               </h3>
             </div>
-            <div className="mt-8 px-4">
+            <div className="mt-8 px-4 overflow-y-scroll min-h-[12rem]">
               <div className="flow-root">
                 <ul role="list" className="divide-y divide-gray-200">
                   {items.map((item) => (

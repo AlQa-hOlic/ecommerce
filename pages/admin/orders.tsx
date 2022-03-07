@@ -151,7 +151,7 @@ export default function AdminUsersPage(props) {
                         <td className="px-6 py-4 whitespace-nowrap">
                           {order.status === "PAYMENT_COMPLETED" ? (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              Completed
+                              Payment Completed
                             </span>
                           ) : order.status === "PAYMENT_ERROR" ? (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
@@ -161,13 +161,17 @@ export default function AdminUsersPage(props) {
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                               Payment Initiated
                             </span>
+                          ) : order.status === "ORDER_CONFIRMED" ? (
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                              Order Confirmed
+                            </span>
                           ) : order.status === "ORDER_COMPLETED" ? (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              Completed
+                              Order Completed
                             </span>
                           ) : order.status === "ORDER_CANCELLED" ? (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              Cancelled
+                              Order Cancelled
                             </span>
                           ) : (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">

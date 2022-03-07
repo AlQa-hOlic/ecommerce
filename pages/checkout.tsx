@@ -4,9 +4,12 @@ import { useForm } from "react-hook-form";
 
 import DefaultLayout from "../layouts/default-layout";
 import { useCart } from "../lib/context/cart";
+import { useRouter } from "next/router";
 
 export default function CheckoutPage(props) {
-  const { items, setItems } = useCart();
+  const router = useRouter();
+  const { items: initialItems, setItems: setCartItems } = useCart();
+  const [items, setItems] = useState(initialItems);
   const [loading, setLoading] = useState(false);
   const {
     register,
@@ -15,10 +18,138 @@ export default function CheckoutPage(props) {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log(data);
+    setLoading(true);
+    // Place order
+    const orderPlaceResponse = await (
+      await fetch("/api/orders/place", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          items,
+        }),
+      })
+    ).json();
+    const order_id = orderPlaceResponse.data.razorpayOrder.id;
+    const amount = orderPlaceResponse.data.razorpayOrder.amount;
+    const currency = orderPlaceResponse.data.razorpayOrder.currency;
+    // Empty cart
+    setCartItems([]);
+
+    // Initiate payment
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+
+    if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      amount,
+      currency,
+      order_id,
+      name: "Embrandiri&#39;s Kitchen",
+      description: "Test Transaction",
+      image: "https://embrandiris.com/logo.svg",
+      handler: async function (response) {
+        let paymentPayload = {
+          orderId: orderPlaceResponse.data.order.id,
+          orderCreationId: order_id,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpayOrderId: response.razorpay_order_id,
+          razorpaySignature: response.razorpay_signature,
+        };
+
+        const orderPaymentResponse = await (
+          await fetch("/api/orders/payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentPayload),
+          })
+        ).json();
+
+        console.log(orderPaymentResponse);
+        router.push("/");
+      },
+      prefill: {
+        name: data["name"],
+        email: data["email"],
+        contact: data["phone"],
+      },
+      notes: {
+        ...data,
+      },
+      theme: {
+        color: "#61dafb",
+      },
+      modal: {
+        escape: false,
+        ondismiss: function () {
+          const paymentPayload = {
+            orderId: orderPlaceResponse.data.order.id,
+          };
+          // alert(response.error.code);
+          // alert(response.error.description);
+          // alert(response.error.source);
+          // alert(response.error.step);
+          // alert(response.error.reason);
+          // alert(response.error.metadata.order_id);
+          // alert(response.error.metadata.payment_id);
+
+          fetch("/api/orders/cancel", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentPayload),
+          })
+            .then((res) => res.json())
+            .then((resData) => {
+              console.log(resData);
+              router.push("/");
+            });
+        },
+      },
+    };
+
+    // @ts-ignore
+    const paymentObject = new Razorpay(options);
+    // paymentObject.on("payment.failed", async function (response) {
+    //   const paymentPayload = {
+    //     orderId: orderPlaceResponse.data.order.id,
+    //   };
+    //   // alert(response.error.code);
+    //   // alert(response.error.description);
+    //   // alert(response.error.source);
+    //   // alert(response.error.step);
+    //   // alert(response.error.reason);
+    //   // alert(response.error.metadata.order_id);
+    //   // alert(response.error.metadata.payment_id);
+
+    //   const orderPaymentResponse = await (
+    //     await fetch("/api/orders/paymentFailed", {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify(paymentPayload),
+    //     })
+    //   ).json();
+
+    //   console.log(orderPaymentResponse);
+    //   router.push("/");
+    // });
+    paymentObject.open();
   };
 
-  console.log(items);
+  // console.log(items);
 
   return (
     <DefaultLayout minimal={true}>
@@ -50,6 +181,30 @@ export default function CheckoutPage(props) {
               {errors.name && (
                 <p className="mt-2 text-sm text-red-600 dark:text-red-500">
                   {errors.name.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-slate-500 text-sm" htmlFor="email">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                autoFocus
+                {...register("email", {
+                  required: "Email is required",
+                  maxLength: {
+                    value: 50,
+                    message: "Maximum 50 characters",
+                  },
+                })}
+                className="relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm ring-2 ring-opacity-50 ring-gray-200 placeholder-gray-500 rounded-sm cursor-default focus:outline-none focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
+              />
+              {errors.email && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+                  {errors.email.message}
                 </p>
               )}
             </div>
@@ -291,4 +446,18 @@ export default function CheckoutPage(props) {
       </div>
     </DefaultLayout>
   );
+}
+
+function loadScript(src) {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      resolve(false);
+    };
+    document.body.appendChild(script);
+  });
 }

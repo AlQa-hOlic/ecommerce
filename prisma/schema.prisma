@@ -7,9 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("PLANETSCALE_PRISMA_DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider = "mysql"
+  url      = env("PLANETSCALE_PRISMA_DATABASE_URL")
+  // referentialIntegrity = "prisma"
 }
 
 model Account {
@@ -84,7 +84,7 @@ model Order {
   pin           String
   phone         String
   userEmail     String?
-  user          User?          @relation(fields: [userEmail], references: [email], onDelete: SetNull)
+  user          User?          @relation(fields: [userEmail], references: [email], onDelete: NoAction)
   orderProducts OrderProduct[]
 }
 
@@ -100,7 +100,7 @@ enum OrderStatus {
 
 model OrderProduct {
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: NoAction)
   productId String
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int     @default(1)
