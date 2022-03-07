@@ -76,6 +76,9 @@ export default function CheckoutPage(props) {
         ).json();
 
         console.log(orderPaymentResponse);
+        alert(
+          "Order has been placed. Please wait for confirmation.\nContact support if you have any inquiries"
+        );
         router.push("/");
       },
       prefill: {
@@ -113,6 +116,9 @@ export default function CheckoutPage(props) {
             .then((res) => res.json())
             .then((resData) => {
               console.log(resData);
+              alert(
+                "Your order has been cancelled.\nContact support if you have any inquiries"
+              );
               router.push("/");
             });
         },
@@ -192,7 +198,6 @@ export default function CheckoutPage(props) {
                 id="email"
                 type="email"
                 name="email"
-                autoFocus
                 {...register("email", {
                   required: "Email is required",
                   maxLength: {

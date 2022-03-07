@@ -43,7 +43,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
-  orders        Order[]
+  // orders        Order[]
 }
 
 model VerificationToken {
@@ -83,8 +83,8 @@ model Order {
   state         String
   pin           String
   phone         String
-  userEmail     String?
-  user          User?          @relation(fields: [userEmail], references: [email], onDelete: NoAction)
+  userEmail     String
+  // user          User?          @relation(fields: [userEmail], references: [email], onDelete: NoAction)
   orderProducts OrderProduct[]
 }
 

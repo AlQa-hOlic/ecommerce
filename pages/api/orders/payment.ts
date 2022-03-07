@@ -109,7 +109,7 @@ export default async function handler(
         },
       });
 
-      res.json({
+      return res.json({
         status: "ok",
         msg: "Transaction verified!",
         data: {
@@ -119,8 +119,6 @@ export default async function handler(
           razorpayPaymentId,
         },
       });
-
-      return res.status(200).json({ status: "ok", data: {} });
     }
   } catch (error) {
     console.error(error);
