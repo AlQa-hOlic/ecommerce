@@ -29,7 +29,7 @@ export default async function handler(
       return res.status(200).json({ status: "ok", data: product });
     }
 
-    // Update a product
+    // Delete a product
     if (req.method === "DELETE") {
       // Only ADMIN has access
       let session = await getSession({ req });
@@ -111,7 +111,7 @@ export default async function handler(
         },
       });
 
-      return res.status(201).json({ status: "ok", data: product });
+      return res.status(200).json({ status: "ok", data: product });
     }
   } catch (error) {
     console.error(error);

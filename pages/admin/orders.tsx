@@ -213,7 +213,7 @@ export default function AdminUsersPage(props) {
                   )
                 ) : (
                   <tr>
-                    <td colSpan={4}>
+                    <td colSpan={5}>
                       <svg viewBox="0 0 769 286" fill="none">
                         <path d="M21 26H747V40H21V26Z" fill="#E5E5E5"></path>
                         <path d="M21 70H747V84H21V70Z" fill="#E5E5E5"></path>

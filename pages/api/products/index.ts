@@ -65,6 +65,9 @@ export default async function handler(
         },
       });
 
+      // Update the homepage (new product added)
+      await res.unstable_revalidate("/");
+
       return res.status(201).json({ status: "ok", data: product });
     }
   } catch (error) {

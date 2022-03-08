@@ -235,7 +235,7 @@ export default function CheckoutPage(props) {
                 </p>
               )}
             </div>
-            <div className="flex space-x-3">
+            <div className="flex flex-col space-y-4 md:flex-row md:space-x-3 md:space-y-0">
               <div className="grow">
                 <label className="block text-slate-500 text-sm" htmlFor="city">
                   City
@@ -283,7 +283,7 @@ export default function CheckoutPage(props) {
                 )}
               </div>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex flex-col space-y-4 md:flex-row md:space-x-3 md:space-y-0">
               <div className="grow">
                 <label className="block text-slate-500 text-sm" htmlFor="pin">
                   Pincode

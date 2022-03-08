@@ -1,5 +1,6 @@
 import { Product } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
 import Breadcrumb from "../../components/breadcrumb";
@@ -89,9 +90,11 @@ export default function AdminProductsPage(props) {
                 onChange={(e) => setFilterInput(e.target.value)}
               />
             </form>
-            <button className="px-3 py-2 rounded text-sm bg-transparent text-[#5B9270] hover:text-[#79ad8d] focus:text-[#79ad8d] hover:underline focus:outline-none focus:underline">
-              Add Product
-            </button>
+            <Link href="/admin/products/add">
+              <a className="px-3 py-2 rounded text-sm bg-transparent text-[#5B9270] hover:text-[#79ad8d] focus:text-[#79ad8d] hover:underline focus:outline-none focus:underline">
+                Add Product
+              </a>
+            </Link>
           </div>
           <div className="w-full max-w-[calc(100vw-2rem)] md:max-w-[calc(100vw-20rem-2rem)] overflow-scroll">
             <table className="min-w-full divide-y divide-gray-200">
@@ -178,26 +181,25 @@ export default function AdminProductsPage(props) {
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <a
-                            href="#"
-                            className="text-gray-400 hover:text-[#79ad8d] focus:text-[#79ad8d]"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-6 w-6"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                              />
-                            </svg>
-                            <span className="sr-only">Edit</span>
-                          </a>
+                          <Link href={`/admin/products/edit/${product.id}`}>
+                            <a className="text-gray-400 hover:text-[#79ad8d] focus:text-[#79ad8d]">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                />
+                              </svg>
+                              <span className="sr-only">Edit</span>
+                            </a>
+                          </Link>
                         </td>
                       </tr>
                     ))
