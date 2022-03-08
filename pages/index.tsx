@@ -20,6 +20,9 @@ export default function IndexPage(props) {
 
 export async function getStaticProps() {
   const products = await prisma.product.findMany({
+    where: {
+      stock: true,
+    },
     orderBy: {
       updatedAt: "desc",
     },

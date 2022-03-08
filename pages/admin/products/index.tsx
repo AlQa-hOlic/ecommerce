@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
-import Breadcrumb from "../../components/breadcrumb";
-import AdminLayout from "../../layouts/admin-layout";
+import Breadcrumb from "../../../components/breadcrumb";
+import AdminLayout from "../../../layouts/admin-layout";
 
 export default function AdminProductsPage(props) {
   const [filterInput, setFilterInput] = useState("");

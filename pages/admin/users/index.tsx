@@ -1,8 +1,9 @@
 import { User } from "@prisma/client";
 import { useState } from "react";
+import Link from "next/link";
 import useSWR from "swr";
-import Breadcrumb from "../../components/breadcrumb";
-import AdminLayout from "../../layouts/admin-layout";
+import Breadcrumb from "../../../components/breadcrumb";
+import AdminLayout from "../../../layouts/admin-layout";
 
 export default function AdminUsersPage(props) {
   const [filterInput, setFilterInput] = useState("");
@@ -171,26 +172,25 @@ export default function AdminUsersPage(props) {
                           })}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <a
-                            href="#"
-                            className="text-gray-400 hover:text-[#79ad8d] focus:text-[#79ad8d]"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-6 w-6"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                              />
-                            </svg>
-                            <span className="sr-only">Edit</span>
-                          </a>
+                          <Link href={`/admin/users/edit/${user.email}`}>
+                            <a className="text-gray-400 hover:text-[#79ad8d] focus:text-[#79ad8d]">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                />
+                              </svg>
+                              <span className="sr-only">Edit</span>
+                            </a>
+                          </Link>
                         </td>
                       </tr>
                     ))

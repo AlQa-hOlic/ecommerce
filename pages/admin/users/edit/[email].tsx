@@ -1,21 +1,20 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import Error from "next/error";
-import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 
-import { Product } from "@prisma/client";
+import { User } from "@prisma/client";
 import Breadcrumb from "../../../../components/breadcrumb";
 import AdminLayout from "../../../../layouts/admin-layout";
 
 export default function AdminEditProductPage(props) {
   const router = useRouter();
   const {
-    data: product,
+    data: user,
     error,
     mutate,
-  } = useSWR<Product>(`/api/products/${router.query.id}`, async (url) => {
+  } = useSWR<User>(`/api/users/${router.query.email}`, async (url) => {
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -56,17 +55,17 @@ export default function AdminEditProductPage(props) {
               href: "/admin",
             },
             {
-              text: "Products",
-              href: "/admin/products",
+              text: "Users",
+              href: "/admin/users",
             },
             {
-              text: "Edit Product",
+              text: "Edit User",
             },
           ]}
         />
         <div className="my-4 py-4 bg-white rounded shadow overflow-hidden">
-          {product ? (
-            <ProductForm {...product} mutate={mutate} />
+          {user ? (
+            <UserForm {...user} mutate={mutate} />
           ) : (
             <svg viewBox="0 0 769 286" fill="none" className="w-full">
               <path d="M21 26H747V40H21V26Z" fill="#E5E5E5"></path>
@@ -83,13 +82,10 @@ export default function AdminEditProductPage(props) {
   );
 }
 
-function ProductForm(props) {
+function UserForm(props) {
   const router = useRouter();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  const [hasImageChanged, setHasImageChanged] = useState(false);
-  const [imageUrl, setImageUrl] = useState(props.imageUrl);
-  const [imageFile, setImageFile] = useState<File>();
   const {
     register,
     formState: { errors, isSubmitting },
@@ -98,9 +94,8 @@ function ProductForm(props) {
   } = useForm({
     defaultValues: {
       name: props.name,
-      price: props.price,
-      tags: props.tags,
-      stock: props.stock,
+      role: props.role === "ADMIN",
+      email: props.email,
     },
   });
   const onSubmit = async (data) => {
@@ -108,35 +103,15 @@ function ProductForm(props) {
       // console.log(data);
       //   setLoading(true);
 
-      let imageUrl = props.imageUrl;
-      if (hasImageChanged) {
-        // Get S3 image upload URL
-        const { url, imageUrl: s3ImageUrl } = await (
-          await fetch(`/api/get-s3-image-upload-url?fileType=${imageFile.type}`)
-        ).json();
-        imageUrl = s3ImageUrl;
-
-        // Upload to S3
-        await fetch(url, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          body: imageFile,
-        });
-      }
-
-      // Add product
       const response = await (
-        await fetch(`/api/products/${props.id}`, {
+        await fetch(`/api/users/${props.email}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             ...data,
-            imageUrl,
-            updateImage: hasImageChanged,
+            role: data.role ? "ADMIN" : "USER",
           }),
         })
       ).json();
@@ -150,6 +125,7 @@ function ProductForm(props) {
       props?.mutate();
       reset({
         ...data,
+        email: props.email,
       });
       //   setLoading(false);
       setError(false);
@@ -163,33 +139,6 @@ function ProductForm(props) {
     }
   };
 
-  const updateImagePreview = (file: File) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", (e) => {
-      setImageUrl(e.target.result.toString());
-    });
-
-    reader.readAsDataURL(file);
-  };
-
-  const onDrop = useCallback((acceptedFiles) => {
-    setHasImageChanged(true);
-    // console.log(acceptedFiles);
-    if (acceptedFiles[0].size > 1048576 * 3) {
-      // 3MB limit
-      alert("File is too big! Upload a smaller image.");
-      return;
-    }
-    setImageFile(acceptedFiles[0]);
-    updateImagePreview(acceptedFiles[0]);
-  }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    multiple: false,
-    accept: "image/jpeg,image/png",
-  });
-
   return (
     <form
       className="flex flex-col px-4 space-y-4"
@@ -197,29 +146,14 @@ function ProductForm(props) {
     >
       {success && (
         <div className="px-4 py-2 block w-full text-base font-medium text-left text-green-900 bg-green-100 rounded whitespace-nowrap text-ellipsis overflow-hidden">
-          <span>Product has been modified!</span>
+          <span>User has been modified!</span>
         </div>
       )}
       {error && (
         <div className="px-4 py-2 block w-full text-base font-medium text-left text-red-900 bg-red-100 rounded whitespace-nowrap text-ellipsis overflow-hidden">
-          <span>Server error! Please try again later.</span>
+          <span>Unknown error! Please try again later.</span>
         </div>
       )}
-      <figure
-        className="p-2 grow w-full flex flex-col lg:flex-row justify-center items-center lg:justify-start space-y-2 space-x-0 lg:space-y-0 lg:space-x-2 border-dotted border-4 border-slate-200 rounded-lg focus:outline-none"
-        {...getRootProps()}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={imageUrl}
-          alt="New Product Image"
-          className="w-full max-w-xs object-cover aspect-square rounded overflow-hidden"
-        />
-        <label className="text-slate-500 text-sm">
-          Select an image / Drop an image
-        </label>
-      </figure>
-      <input type="file" id="image" className="sr-only" {...getInputProps()} />
       <div>
         <label className="block text-slate-500 text-sm" htmlFor="name">
           Name
@@ -244,58 +178,45 @@ function ProductForm(props) {
           </p>
         )}
       </div>
-      <div className="flex flex-col space-y-4 md:flex-row md:space-x-3 md:space-y-0">
-        <div className="grow">
-          <label className="block text-slate-500 text-sm" htmlFor="price">
-            Price
-          </label>
-          <input
-            id="price"
-            type="number"
-            name="price"
-            {...register("price", {
-              required: "Price is required",
-              valueAsNumber: true,
-            })}
-            className="relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm ring-2 ring-opacity-50 ring-gray-200 placeholder-gray-500 rounded-sm cursor-default focus:outline-none focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
-          />
-          {errors.price && (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-              {errors.price.message}
-            </p>
-          )}
-        </div>
-        <div className="grow">
-          <label className="block text-slate-500 text-sm" htmlFor="tags">
-            Tags
-          </label>
-          <input
-            id="tags"
-            type="text"
-            name="tags"
-            {...register("tags", {})}
-            className="relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm ring-2 ring-opacity-50 ring-gray-200 placeholder-gray-500 rounded-sm cursor-default focus:outline-none focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
-          />
-          {errors.tags && (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-              {errors.tags.message}
-            </p>
-          )}
-        </div>
+      <div>
+        <label className="block text-slate-500 text-sm" htmlFor="email">
+          Email
+        </label>
+        <input
+          id="email"
+          type="text"
+          name="email"
+          {...register("email", {
+            disabled: true,
+            required: "Email is required",
+            maxLength: {
+              value: 40,
+              message: "Maximum 40 characters",
+            },
+          })}
+          className="relative w-full p-2 mt-2 text-left text-gray-900 sm:text-sm ring-2 ring-opacity-50 ring-gray-200 placeholder-gray-500 rounded-sm cursor-default focus:outline-none focus:ring-[#5B9270] transition duration-200 ease-linear overflow-hidden"
+        />
+        {errors.email && (
+          <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+            {errors.email.message}
+          </p>
+        )}
       </div>
       <div className="flex items-start">
         <div className="flex items-center h-5">
           <input
-            id="stock"
-            aria-describedby="stock"
+            id="role"
+            aria-describedby="role"
             type="checkbox"
             className="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-[#5B9270]"
-            {...register("stock", {})}
+            {...register("role", {
+              value: props.role === "ADMIN",
+            })}
           />
         </div>
         <div className="ml-3 text-sm">
           <label htmlFor="stock" className="font-medium text-slate-500 text-sm">
-            In Stock
+            Is Admin
           </label>
         </div>
       </div>
@@ -331,24 +252,24 @@ function ProductForm(props) {
               ></path>
             </svg>
           )}
-          Update Product
+          Update User
         </button>
         <button
           onClick={(e) => {
             e.preventDefault();
             if (!confirm("Are you sure?")) return;
-            fetch("/api/products/" + props.id, {
+            fetch("/api/users/" + props.email, {
               method: "DELETE",
             })
               .then((res) => res.json())
               .then((data) => {
-                console.log("Deleted product", data);
+                console.log("Deleted user", data);
               })
               .catch((err) => {
                 console.error(err);
               })
               .finally(() => {
-                router.push("/admin/products");
+                router.push("/admin/users");
               });
           }}
           className={`relative p-3 flex justify-center uppercase tracking-widest text-sm text-red-400 border-1 hover:text-white hover:bg-red-500 rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] focus:bg-[#79ad8d] transition duration-200${
@@ -357,7 +278,7 @@ function ProductForm(props) {
               : ""
           }`}
         >
-          Delete Product
+          Delete User
         </button>
       </div>
     </form>

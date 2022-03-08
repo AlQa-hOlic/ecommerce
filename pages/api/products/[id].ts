@@ -60,6 +60,9 @@ export default async function handler(
 
       // Delete image from S3
 
+      // Update the homepage (product removed)
+      await res.unstable_revalidate("/");
+
       return res.status(204).json({ status: "ok", data: null });
     }
 
@@ -110,6 +113,9 @@ export default async function handler(
           id,
         },
       });
+
+      // Update the homepage (product updated)
+      await res.unstable_revalidate("/");
 
       return res.status(200).json({ status: "ok", data: product });
     }

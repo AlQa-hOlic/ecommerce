@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 
+import { Role } from "@prisma/client";
 import prisma from "../../../prisma/client";
 
 export default async function handler(
@@ -46,6 +47,13 @@ export default async function handler(
     if (req.method === "DELETE") {
       const { email } = req.query;
 
+      // Cannot delete yourself
+      if (session.user.email === email) {
+        return res
+          .status(400)
+          .json({ status: "error", msg: "Bad Request", data: null });
+      }
+
       if (!email || typeof email !== "string") {
         return res
           .status(400)
@@ -62,29 +70,48 @@ export default async function handler(
     }
 
     // Update a user
-    // if (req.method === "PUT") {
-    //   const { email } = req.query;
+    if (req.method === "PUT") {
+      const { email } = req.query;
 
-    //   if (!email || typeof email !== "string") {
-    //     return res
-    //       .status(400)
-    //       .json({ status: "error", msg: "Bad Request", data: null });
-    //   }
+      // Cannot update yourself
+      if (session.user.email === email) {
+        return res
+          .status(400)
+          .json({ status: "error", msg: "Bad Request", data: null });
+      }
 
-    //   const { name, image } = req.body;
+      if (!email || typeof email !== "string") {
+        return res
+          .status(400)
+          .json({ status: "error", msg: "Bad Request", data: null });
+      }
 
-    //   const user = await prisma.user.update({
-    //     data: {
-    //       name,
-    //       image,
-    //     },
-    //     where: {
-    //       email,
-    //     },
-    //   });
+      const { name, role } = req.body;
 
-    //   return res.status(201).json({ status: "ok", data: user });
-    // }
+      console.log(role);
+      if (!role || typeof role !== "string") {
+        return res
+          .status(400)
+          .json({ status: "error", msg: "Bad Request", data: null });
+      }
+      if (role !== "ADMIN" && role !== "USER") {
+        return res
+          .status(400)
+          .json({ status: "error", msg: "Bad Request", data: { role: true } });
+      }
+
+      const user = await prisma.user.update({
+        data: {
+          name,
+          role: role as Role,
+        },
+        where: {
+          email,
+        },
+      });
+
+      return res.status(200).json({ status: "ok", data: user });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({
