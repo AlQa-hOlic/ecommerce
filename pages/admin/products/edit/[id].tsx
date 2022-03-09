@@ -202,7 +202,7 @@ function ProductForm(props) {
       )}
       {error && (
         <div className="px-4 py-2 block w-full text-base font-medium text-left text-red-900 bg-red-100 rounded whitespace-nowrap text-ellipsis overflow-hidden">
-          <span>Server error! Please try again later.</span>
+          <span>Unknown error! Please try again later.</span>
         </div>
       )}
       <figure
@@ -342,13 +342,15 @@ function ProductForm(props) {
             })
               .then((res) => res.json())
               .then((data) => {
-                console.log("Deleted product", data);
+                if (data.status === "ok") {
+                  console.log("Deleted product", data);
+                  router.push("/admin/products");
+                } else {
+                  setError(true);
+                }
               })
               .catch((err) => {
                 console.error(err);
-              })
-              .finally(() => {
-                router.push("/admin/products");
               });
           }}
           className={`relative p-3 flex justify-center uppercase tracking-widest text-sm text-red-400 border-1 hover:text-white hover:bg-red-500 rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] focus:bg-[#79ad8d] transition duration-200${

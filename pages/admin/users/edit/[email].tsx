@@ -263,13 +263,13 @@ function UserForm(props) {
             })
               .then((res) => res.json())
               .then((data) => {
-                console.log("Deleted user", data);
+                if (data.status === "ok") {
+                  console.log("Deleted user", data);
+                  router.push("/admin/users");
+                }
               })
               .catch((err) => {
                 console.error(err);
-              })
-              .finally(() => {
-                router.push("/admin/users");
               });
           }}
           className={`relative p-3 flex justify-center uppercase tracking-widest text-sm text-red-400 border-1 hover:text-white hover:bg-red-500 rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#5B9270] focus:bg-[#79ad8d] transition duration-200${
