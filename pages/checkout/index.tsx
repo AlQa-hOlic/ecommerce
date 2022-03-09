@@ -2,8 +2,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 
-import DefaultLayout from "../layouts/default-layout";
-import { useCart } from "../lib/context/cart";
+import DefaultLayout from "../../layouts/default-layout";
+import { useCart } from "../../lib/context/cart";
 import { useRouter } from "next/router";
 
 export default function CheckoutPage(props) {
@@ -76,10 +76,10 @@ export default function CheckoutPage(props) {
         ).json();
 
         console.log(orderPaymentResponse);
-        alert(
-          "Order has been placed. Please wait for confirmation.\nContact support if you have any inquiries"
-        );
-        router.push("/");
+        // alert(
+        //   "Order has been placed. Please wait for confirmation.\nContact support if you have any inquiries"
+        // );
+        router.push("/checkout/success");
       },
       prefill: {
         name: data["name"],

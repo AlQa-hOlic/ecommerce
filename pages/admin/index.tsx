@@ -190,7 +190,21 @@ export default function AdminPage(props) {
                   }}
                 />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <XAxis dataKey="id" hide />
+                <XAxis
+                  // type="number"
+                  // domain={["auto", "auto"]}
+                  dataKey="id"
+                  tickFormatter={(id, index) => {
+                    console.log(lineChartData[index]);
+                    return new Date(
+                      lineChartData[index].createdAt
+                    ).toLocaleString(undefined, {
+                      hour12: true,
+                      dateStyle: "short",
+                      timeStyle: "short",
+                    });
+                  }}
+                />
                 <YAxis />
                 <Tooltip />
                 {/* <Legend /> */}
@@ -222,9 +236,7 @@ export async function getServerSideProps() {
       },
     },
     orderBy: {
-      orderProducts: {
-        _count: "desc",
-      },
+      createdAt: "asc",
     },
     include: {
       orderProducts: {
@@ -242,6 +254,7 @@ export async function getServerSideProps() {
       })),
       lineChartData: orders.map((order) => ({
         id: order.id,
+        createdAt: order.createdAt.getTime(),
         orderValue: order.orderProducts.reduce(
           (amount, orderProduct) =>
             amount + orderProduct.quantity * orderProduct.product.price,

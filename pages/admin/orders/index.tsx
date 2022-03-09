@@ -2,8 +2,8 @@ import { Order } from "@prisma/client";
 import { useState } from "react";
 import Link from "next/link";
 import useSWR from "swr";
-import Breadcrumb from "../../components/breadcrumb";
-import AdminLayout from "../../layouts/admin-layout";
+import Breadcrumb from "../../../components/breadcrumb";
+import AdminLayout from "../../../layouts/admin-layout";
 
 export default function AdminUsersPage(props) {
   const [filterInput, setFilterInput] = useState("");
@@ -163,7 +163,7 @@ export default function AdminUsersPage(props) {
                               Payment Initiated
                             </span>
                           ) : order.status === "ORDER_CONFIRMED" ? (
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-sky-100 text-sky-800">
                               Order Confirmed
                             </span>
                           ) : order.status === "ORDER_COMPLETED" ? (
