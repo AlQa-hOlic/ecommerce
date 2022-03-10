@@ -33,8 +33,7 @@ const colors = [
 
 export default function AdminPage(props) {
   const router = useRouter();
-  const { pieChartData, lineChartData } = props;
-  console.log(lineChartData);
+  const { pieChartData, lineChartData, stats } = props;
   return (
     <AdminLayout>
       <div className="w-full mt-8 px-4 flex flex-col">
@@ -43,7 +42,7 @@ export default function AdminPage(props) {
           {[
             {
               title: "Users",
-              count: 34,
+              count: stats.users,
               color: "bg-red-100 text-red-600",
               icon: (
                 <svg
@@ -64,7 +63,7 @@ export default function AdminPage(props) {
             },
             {
               title: "Products",
-              count: 25,
+              count: stats.products,
               color: "bg-sky-100 text-sky-600",
               icon: (
                 <svg
@@ -85,7 +84,7 @@ export default function AdminPage(props) {
             },
             {
               title: "Orders",
-              count: 126,
+              count: stats.orders,
               color: "bg-amber-100 text-amber-600",
               icon: (
                 <svg
@@ -106,7 +105,7 @@ export default function AdminPage(props) {
             },
             {
               title: "Total Sales",
-              count: 23423,
+              count: stats.totalSales,
               color: "bg-green-100 text-green-600",
               icon: (
                 <svg
@@ -195,7 +194,6 @@ export default function AdminPage(props) {
                   // domain={["auto", "auto"]}
                   dataKey="id"
                   tickFormatter={(id, index) => {
-                    console.log(lineChartData[index]);
                     return new Date(
                       lineChartData[index].createdAt
                     ).toLocaleString(undefined, {
@@ -248,6 +246,21 @@ export async function getServerSideProps() {
   });
   return {
     props: {
+      stats: {
+        users: await prisma.user.count(),
+        products: await prisma.product.count(),
+        orders: await prisma.order.count(),
+        totalSales: orders.reduce(
+          (totalSales, order) =>
+            totalSales +
+            order.orderProducts.reduce(
+              (amount, orderProduct) =>
+                amount + orderProduct.quantity * orderProduct.product.price,
+              0
+            ),
+          0
+        ),
+      },
       pieChartData: products.map((product) => ({
         name: product.name,
         value: product.price,

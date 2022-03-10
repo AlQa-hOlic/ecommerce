@@ -19,7 +19,7 @@ export default async function handler(
         razorpayOrderId,
         razorpaySignature,
       } = req.body;
-      console.log(orderId);
+      // console.log(orderId);
       if (paymentFailure) {
         if (!orderId || typeof orderId !== "string") {
           return res

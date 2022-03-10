@@ -88,7 +88,7 @@ export default async function handler(
 
       const { name, role } = req.body;
 
-      console.log(role);
+      // console.log(role);
       if (!role || typeof role !== "string") {
         return res
           .status(400)

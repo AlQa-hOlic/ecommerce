@@ -75,7 +75,7 @@ export default function CheckoutPage(props) {
           })
         ).json();
 
-        console.log(orderPaymentResponse);
+        // console.log(orderPaymentResponse);
         // alert(
         //   "Order has been placed. Please wait for confirmation.\nContact support if you have any inquiries"
         // );
@@ -115,7 +115,7 @@ export default function CheckoutPage(props) {
           })
             .then((res) => res.json())
             .then((resData) => {
-              console.log(resData);
+              // console.log(resData);
               alert(
                 "Your order has been cancelled.\nContact support if you have any inquiries"
               );
