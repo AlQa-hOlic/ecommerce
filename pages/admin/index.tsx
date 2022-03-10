@@ -148,8 +148,8 @@ export default function AdminPage(props) {
         </div>
         {/* <h1 className="mb-4 text-2xl text-gray-500">Sales Summary</h1> */}
         <div className="p-4 grid grid-cols-1 gap-4 lg:grid-cols-3 rounded bg-white shadow">
-          <div className="col-span-1">
-            <ResponsiveContainer className="p-2 relative" height={324}>
+          <div className="col-span-1 h-[18rem] lg:h-[24rem]">
+            <ResponsiveContainer className="relative">
               <PieChart>
                 <Pie
                   data={pieChartData}
@@ -170,8 +170,8 @@ export default function AdminPage(props) {
               Product Price Summary
             </h3>
           </div>
-          <div className="col-span-2">
-            <ResponsiveContainer className="p-2 relative" height={324}>
+          <div className="col-span-2 h-[18rem] lg:h-[24rem]">
+            <ResponsiveContainer className="relative">
               <LineChart data={lineChartData}>
                 <Line
                   type="monotone"

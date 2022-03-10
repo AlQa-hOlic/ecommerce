@@ -433,7 +433,7 @@ function CartView(props) {
                   <p>
                     or{" "}
                     <button
-                      type="button"
+                      onClick={(e) => props.setOpen(false)}
                       className="font-medium text-[#5B9270] hover:text-[#79ad8d]"
                     >
                       Continue Shopping<span aria-hidden="true"> &rarr;</span>
