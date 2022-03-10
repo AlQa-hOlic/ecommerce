@@ -92,7 +92,7 @@ const routes = [
 export default function AdminLayout(props) {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   if (status === "loading") {
     return <Loading />;
