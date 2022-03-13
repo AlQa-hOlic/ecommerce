@@ -10,7 +10,6 @@ import {
   Pie,
   Cell,
   Tooltip,
-  Legend,
 } from "recharts";
 import AdminLayout from "../../layouts/admin-layout";
 import prisma from "../../prisma/client";
@@ -148,66 +147,73 @@ export default function AdminPage(props) {
         </div>
         {/* <h1 className="mb-4 text-2xl text-gray-500">Sales Summary</h1> */}
         <div className="p-4 grid grid-cols-1 gap-4 lg:grid-cols-3 rounded bg-white shadow">
-          <div className="col-span-1 h-[18rem] lg:h-[24rem]">
-            <ResponsiveContainer className="relative">
-              <PieChart>
-                <Pie
-                  data={pieChartData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                >
-                  {pieChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[index]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="col-span-1 flex flex-col">
+            <div className="grow">
+              <ResponsiveContainer className="relative" aspect={1}>
+                <PieChart>
+                  <Pie
+                    data={pieChartData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    onClick={({ id }) => {
+                      router.push("/admin/products/edit/" + id);
+                    }}
+                  >
+                    {pieChartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={colors[index]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  {/* <Legend /> */}
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
             <h3 className="mt-2 text-center text-sm text-gray-400">
               Product Price Summary
             </h3>
           </div>
-          <div className="col-span-2 h-[18rem] lg:h-[24rem]">
-            <ResponsiveContainer className="relative">
-              <LineChart data={lineChartData}>
-                <Line
-                  type="monotone"
-                  dataKey="orderValue"
-                  name="Order Value"
-                  stroke={colors[0]}
-                  activeDot={{
-                    className: "cursor-pointer",
-                    r: 8,
-                    onClick: (_, e: any) => {
-                      router.push(
-                        "/admin/orders/view/" + lineChartData[e.index].id
-                      );
-                    },
-                  }}
-                />
-                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <XAxis
-                  // type="number"
-                  // domain={["auto", "auto"]}
-                  dataKey="id"
-                  tickFormatter={(id, index) => {
-                    return new Date(
-                      lineChartData[index].createdAt
-                    ).toLocaleString(undefined, {
-                      hour12: true,
-                      dateStyle: "short",
-                      timeStyle: "short",
-                    });
-                  }}
-                />
-                <YAxis />
-                <Tooltip />
-                {/* <Legend /> */}
-              </LineChart>
-            </ResponsiveContainer>
+          <div className="col-span-2 flex flex-col">
+            <div className="grow">
+              <ResponsiveContainer className="relative" aspect={16 / 9}>
+                <LineChart data={lineChartData}>
+                  <Line
+                    type="monotone"
+                    dataKey="orderValue"
+                    name="Order Value"
+                    stroke={colors[0]}
+                    activeDot={{
+                      className: "cursor-pointer",
+                      r: 8,
+                      onClick: (_, e: any) => {
+                        router.push(
+                          "/admin/orders/view/" + lineChartData[e.index].id
+                        );
+                      },
+                    }}
+                  />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <XAxis
+                    // type="number"
+                    // domain={["auto", "auto"]}
+                    dataKey="id"
+                    tickFormatter={(id, index) => {
+                      return new Date(
+                        lineChartData[index].createdAt
+                      ).toLocaleString(undefined, {
+                        hour12: true,
+                        dateStyle: "short",
+                        timeStyle: "short",
+                      });
+                    }}
+                  />
+                  <YAxis />
+                  <Tooltip />
+                  {/* <Legend /> */}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
             <h3 className="mt-2 text-center text-sm text-gray-400">
               Sales Summary
             </h3>
@@ -262,6 +268,7 @@ export async function getServerSideProps() {
         ),
       },
       pieChartData: products.map((product) => ({
+        id: product.id,
         name: product.name,
         value: product.price,
       })),
