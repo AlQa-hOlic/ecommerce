@@ -145,7 +145,7 @@ export default function AdminPage(props) {
             </div>
           ))}
         </div>
-        {/* <h1 className="mb-4 text-2xl text-gray-500">Sales Summary</h1> */}
+        {/* <h1 className="mb-4 text-2xl text-gray-500">Sales Charts</h1> */}
         <div className="p-4 grid grid-cols-1 gap-4 lg:grid-cols-3 rounded bg-white shadow">
           <div className="col-span-1 flex flex-col">
             <div className="grow">

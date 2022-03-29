@@ -65,21 +65,35 @@ export default function CheckoutPage(props) {
           razorpaySignature: response.razorpay_signature,
         };
 
-        const orderPaymentResponse = await (
-          await fetch("/api/orders/payment", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(paymentPayload),
-          })
-        ).json();
+        try {
+          const orderPaymentResponse = await (
+            await fetch("/api/orders/payment", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(paymentPayload),
+            })
+          ).json();
 
-        // console.log(orderPaymentResponse);
-        // alert(
-        //   "Order has been placed. Please wait for confirmation.\nContact support if you have any inquiries"
-        // );
-        router.push("/checkout/success");
+          if (orderPaymentResponse.status !== "ok") {
+            alert(
+              "Payment couldn't be authorized, order unsuccessful.\nContact support if you have any inquiries"
+            );
+            router.push("/");
+            return;
+          }
+          // console.log(orderPaymentResponse);
+          // alert(
+          //   "Order has been placed. Please wait for confirmation.\nContact support if you have any inquiries"
+          // );
+          router.push("/checkout/success");
+        } catch (e) {
+          alert(
+            "Payment couldn't be authorized, order unsuccessful.\nContact support if you have any inquiries"
+          );
+          router.push("/");
+        }
       },
       prefill: {
         name: data["name"],

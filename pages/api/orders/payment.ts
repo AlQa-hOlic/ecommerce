@@ -1,5 +1,6 @@
 import { createHmac } from "crypto";
 import { NextApiRequest, NextApiResponse } from "next";
+import orderConfirmation from "../../../lib/mail/order-confirmation";
 
 import prisma from "../../../prisma/client";
 
@@ -20,6 +21,7 @@ export default async function handler(
         razorpaySignature,
       } = req.body;
       // console.log(orderId);
+
       if (paymentFailure) {
         if (!orderId || typeof orderId !== "string") {
           return res
@@ -108,6 +110,9 @@ export default async function handler(
           status: "PAYMENT_COMPLETED",
         },
       });
+
+      console.log("test");
+      await orderConfirmation({ email: order.userEmail, order });
 
       return res.json({
         status: "ok",

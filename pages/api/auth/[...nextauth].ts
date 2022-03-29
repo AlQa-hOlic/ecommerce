@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
 
 import prisma from "../../../prisma/client";
+import sendVerificationRequest from "../../../lib/mail/verification-request";
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -18,6 +19,7 @@ export default NextAuth({
         },
       },
       from: process.env.EMAIL_FROM,
+      sendVerificationRequest,
     }),
   ],
   session: { strategy: "jwt" },

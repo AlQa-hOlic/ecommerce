@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 
-export default function LoginPage(props) {
+export default function LoginPage(props: any) {
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -18,7 +18,7 @@ export default function LoginPage(props) {
     setError,
   } = useForm();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: { [x: string]: any; }) => {
     // console.log(data);
     if (loading) return;
     setLoading(true);
